@@ -1,8 +1,8 @@
 package service;
 
 import model.User;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import service.exceptions.InvalidInputException;
@@ -12,6 +12,7 @@ class UserServiceTest {
     @InjectMocks
     UserService userService = new UserService();
 
+    @Order(value = 1)
     @Test
     void register() {
         User validUser = new User("black@beard", "Black.Bird1");
@@ -26,7 +27,7 @@ class UserServiceTest {
         Assertions.assertNull(userService.getCurrentUser());
     }
 
-    @Before
+    @Order(value = 2)
     @Test
     void login() {
         User validUser = new User("jack@sparrow", "Black.Pearl1");
@@ -44,10 +45,9 @@ class UserServiceTest {
         Assertions.assertThrows(InvalidInputException.class, () -> userService.login(userWithMissingCredentials));
     }
 
+    @Order(value = 3)
     @Test
     void logout() {
-        User validUser = new User("jack@sparrow", "Black.Pearl1");
-        Assertions.assertDoesNotThrow(() -> userService.login(validUser));
         Assertions.assertNotNull(userService.getCurrentUser());
         userService.logout();
         Assertions.assertNull(userService.getCurrentUser());

@@ -29,7 +29,6 @@ public class UserRepository {
         if(!users.isEmpty()) {
             user = users.get(0);
         }
-        entityManager.getTransaction().commit();
         entityManager.close();
         return user;
     }
