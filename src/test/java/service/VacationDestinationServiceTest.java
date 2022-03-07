@@ -14,6 +14,7 @@ class VacationDestinationServiceTest {
     VacationDestinationService vacationDestinationService = new VacationDestinationService();
 
     private final String SAMPLE_DESTINATION_NAME = "Kastel Stari";
+    private final String SAMPLE_DESTINATION_NAME_TO_DELETE = "Plitvitze";
     private final String INEXISTENT_DESTINATION_NAME = "Stari Kastel";
 
     @Order(value = 1)
@@ -29,7 +30,9 @@ class VacationDestinationServiceTest {
     @Order(value = 2)
     @Test
     void delete() {
-        Assertions.assertDoesNotThrow(() -> vacationDestinationService.delete(SAMPLE_DESTINATION_NAME));
+        VacationDestination vacationDestination = new VacationDestination(SAMPLE_DESTINATION_NAME_TO_DELETE);
+        Assertions.assertDoesNotThrow(() -> vacationDestinationService.add(vacationDestination));
+        Assertions.assertDoesNotThrow(() -> vacationDestinationService.delete(SAMPLE_DESTINATION_NAME_TO_DELETE));
 
         Assertions.assertThrows(InvalidOperationException.class, () -> vacationDestinationService.delete(INEXISTENT_DESTINATION_NAME));
     }
