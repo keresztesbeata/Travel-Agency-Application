@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name="vacation_destination")
+@Table(name = "vacation_destination")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,11 +20,11 @@ public class VacationDestination {
     @GeneratedValue
     private Long id;
 
-    @Column(unique = true, nullable = false,length = 100)
+    @Column(unique = true, nullable = false, length = 100)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-    private List<VacationPackage> packages;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<VacationPackage> packages;
 
     public VacationDestination(String name) {
         this.name = name;

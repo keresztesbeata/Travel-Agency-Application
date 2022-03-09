@@ -19,7 +19,7 @@ public class VacationDestinationRepository {
         return instance;
     }
 
-    public VacationDestination findVacationDestinationByName(String name) {
+    public VacationDestination findByName(String name) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         VacationDestination vacationDestination = null;
@@ -34,7 +34,7 @@ public class VacationDestinationRepository {
         return vacationDestination;
     }
 
-    public VacationDestination findVacationDestinationById(Long id) {
+    public VacationDestination findById(Long id) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         VacationDestination vacationDestination = entityManager.find(VacationDestination.class, id);
@@ -42,7 +42,7 @@ public class VacationDestinationRepository {
         return vacationDestination;
     }
 
-    public void saveVacationDestination(VacationDestination vacationDestination) {
+    public void save(VacationDestination vacationDestination) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(vacationDestination);
@@ -50,7 +50,7 @@ public class VacationDestinationRepository {
         entityManager.close();
     }
 
-    public void deleteVacationDestination(Long id) {
+    public void deleteById(Long id) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         VacationDestination vacationDestination = entityManager.find(VacationDestination.class, id);

@@ -13,17 +13,17 @@ public class UserService {
         UserValidator userValidator = new UserValidator(user);
         userValidator.validate();
 
-        if (userRepository.findUserByUsername(user.getUsername()) != null) {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new InvalidInputException("The username: " + user.getUsername() + " is already taken! Please select another one!");
         }
-        userRepository.saveUser(user);
+        userRepository.save(user);
     }
 
     public void login(User user) throws InvalidInputException {
         if (user.getUsername() == null || user.getPassword() == null) {
             throw new InvalidInputException("The username and password should not be empty!");
         }
-        User existingUser = userRepository.findUserByUsername(user.getUsername());
+        User existingUser = userRepository.findByUsername(user.getUsername());
         if (existingUser == null) {
             throw new InvalidInputException("Invalid username!");
         }

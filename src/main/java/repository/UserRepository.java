@@ -18,7 +18,7 @@ public class UserRepository {
         return instance;
     }
 
-    public User findUserByUsername(String username) {
+    public User findByUsername(String username) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         User user = null;
@@ -33,7 +33,7 @@ public class UserRepository {
         return user;
     }
 
-    public void saveUser(User user) {
+    public void save(User user) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(user);
