@@ -24,8 +24,13 @@ public class User {
     @Column(nullable = false, length = 100)
     private String password;
 
-    public User(String username, String password) {
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserType userType;
+
+    public User(String username, String password, UserType userType) {
         this.username = username;
         this.password = password;
+        this.userType = userType;
     }
 }
