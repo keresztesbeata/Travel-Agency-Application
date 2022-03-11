@@ -1,7 +1,9 @@
 package service;
 
 import model.PackageStatus;
+import model.VacationDestination;
 import model.VacationPackage;
+import repository.VacationDestinationRepository;
 import repository.VacationPackageRepository;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class VacationPackageService {
     private static VacationPackageRepository vacationPackageRepository = VacationPackageRepository.getInstance();
+    private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
     private InputValidator<VacationPackage> vacationPackageValidator;
 
     public VacationPackageService() {
@@ -41,8 +44,8 @@ public class VacationPackageService {
         return vacationPackageRepository.findAll();
     }
 
-    public List<VacationPackage> findByPackageStatus(PackageStatus packageStatus) {
-        return vacationPackageRepository.findByPackageStatus(packageStatus);
+    public List<VacationPackage> findByPackageStatus(List<PackageStatus> packageStatuses) {
+        return vacationPackageRepository.findByPackageStatus(packageStatuses);
     }
 
     public VacationPackage findByName(String name) {
@@ -50,7 +53,8 @@ public class VacationPackageService {
     }
 
     public List<VacationPackage> findByDestinationName(String destinationName) {
-        return vacationPackageRepository.findByDestinationName(destinationName);
+        VacationDestination vacationDestination = vacationDestinationRepository.findByName(destinationName);
+        return vacationPackageRepository.findByDestination(vacationDestination);
     }
 
     public List<VacationPackage> findByPrice(Double minPrice, Double maxPrice) {

@@ -1,15 +1,11 @@
 package repository;
 
-import model.User;
-import model.VacationPackage;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
@@ -38,7 +34,7 @@ public abstract class EntityRepository<T, L> {
     public void delete(T entity) {
         EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(entity);
+        entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
         entityManager.getTransaction().commit();
         entityManager.close();
     }
@@ -47,7 +43,9 @@ public abstract class EntityRepository<T, L> {
         EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         T entity = entityManager.find(type, id);
+        entityManager.detach(entity);
         entityManager.close();
+
         return entity;
     }
 
@@ -57,31 +55,23 @@ public abstract class EntityRepository<T, L> {
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
         Root<T> root = criteriaQuery.from(type);
         criteriaQuery.select(root);
-        Query query = entityManager.createQuery(criteriaQuery);
-        List<T> result = (List<T>) query.getResultList();
+        List<T> result = entityManager.createQuery(criteriaQuery).getResultList();
         entityManager.close();
+
         return result;
     }
 
-    public void update(T entity) {
+    public T update(T entity) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.merge(entity);
-        entityManager.getTransaction().commit();
+        EntityTransaction entityTransaction = entityManager.getTransaction();
+        T updatedEntity = entityManager.merge(entity);
+        entityTransaction.commit();
         entityManager.close();
+        return updatedEntity;
     }
 
-    protected List<T> findByCriteria(List<Predicate> predicates) {
-        EntityManager entityManager = getEntityManager();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
-        Root<T> root = criteriaQuery.from(type);
-        criteriaQuery.select(root).where(criteriaBuilder.and(predicates.toArray(Predicate[]::new)));
-        Query query = entityManager.createQuery(criteriaQuery);
-        List<T> result = (List<T>) query.getResultList();
-        entityManager.close();
-        return result;
+    protected List<T> findByCriteria(QueryFilter<T> queryFilter) {
+        return queryFilter.applyFilter();
     }
-
 }
 

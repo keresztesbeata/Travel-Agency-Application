@@ -28,10 +28,13 @@ public class VacationDestinationRepository extends EntityRepository<VacationDest
                 .createQuery(SQL_QUERY_FIND_DESTINATION_BY_NAME)
                 .setParameter(1, name)
                 .getResultList();
+
         if (!destinations.isEmpty()) {
             vacationDestination = destinations.get(0);
         }
+        entityManager.getTransaction().commit();
         entityManager.close();
+
         return vacationDestination;
     }
 

@@ -22,16 +22,19 @@ public class UserRepository extends EntityRepository<User, Long> {
 
     public User findByUsername(String username) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
         User user = null;
         List<User> users = entityManager
                 .createQuery(SQL_QUERY_FIND_USER_BY_USERNAME)
                 .setParameter(1, username)
                 .getResultList();
+
         if(!users.isEmpty()) {
             user = users.get(0);
         }
         entityManager.close();
+
         return user;
     }
+
+
 }
