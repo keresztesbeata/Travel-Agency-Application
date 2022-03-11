@@ -24,6 +24,6 @@ public class VacationDestinationService {
         if (vacationDestination == null) {
             throw new InvalidOperationException("The vacation destination: " + name + " cannot be deleted, because it doesn't exist!");
         }
-        vacationDestinationRepository.deleteById(vacationDestination.getId());
+        vacationDestinationRepository.delete(vacationDestination);
     }
 }

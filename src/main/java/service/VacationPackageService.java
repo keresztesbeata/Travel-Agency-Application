@@ -1,5 +1,6 @@
 package service;
 
+import model.PackageStatus;
 import model.VacationPackage;
 import repository.VacationPackageRepository;
 import service.exceptions.InvalidInputException;
@@ -33,7 +34,15 @@ public class VacationPackageService {
         if (vacationPackage == null) {
             throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it doesn't exist!");
         }
-        vacationPackageRepository.deleteById(vacationPackage.getId());
+        vacationPackageRepository.delete(vacationPackage);
+    }
+
+    public List<VacationPackage> findAll() {
+        return vacationPackageRepository.findAll();
+    }
+
+    public List<VacationPackage> findByPackageStatus(PackageStatus packageStatus) {
+        return vacationPackageRepository.findByPackageStatus(packageStatus);
     }
 
     public VacationPackage findByName(String name) {

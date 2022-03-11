@@ -5,11 +5,13 @@ import model.User;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class UserRepository {
+public class UserRepository extends EntityRepository<User, Long> {
     private static UserRepository instance;
     private static final String SQL_QUERY_FIND_USER_BY_USERNAME = "select user from User user where user.username = ?1";
 
-    private UserRepository() {}
+    private UserRepository() {
+        super(User.class);
+    }
 
     public static UserRepository getInstance() {
         if(instance == null) {
@@ -19,7 +21,7 @@ public class UserRepository {
     }
 
     public User findByUsername(String username) {
-        EntityManager entityManager = EntityRepository.getEntityManager();
+        EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         User user = null;
         List<User> users = entityManager
@@ -31,13 +33,5 @@ public class UserRepository {
         }
         entityManager.close();
         return user;
-    }
-
-    public void save(User user) {
-        EntityManager entityManager = EntityRepository.getEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-        entityManager.close();
     }
 }

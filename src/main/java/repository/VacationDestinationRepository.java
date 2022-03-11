@@ -5,11 +5,12 @@ import model.VacationDestination;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class VacationDestinationRepository {
+public class VacationDestinationRepository extends EntityRepository<VacationDestination, Long>{
     private static VacationDestinationRepository instance;
     private static final String SQL_QUERY_FIND_DESTINATION_BY_NAME = "select destination from VacationDestination destination where destination.name = ?1";
 
     private VacationDestinationRepository() {
+        super(VacationDestination.class);
     }
 
     public static VacationDestinationRepository getInstance() {
@@ -20,7 +21,7 @@ public class VacationDestinationRepository {
     }
 
     public VacationDestination findByName(String name) {
-        EntityManager entityManager = EntityRepository.getEntityManager();
+        EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         VacationDestination vacationDestination = null;
         List<VacationDestination> destinations = entityManager
@@ -34,28 +35,4 @@ public class VacationDestinationRepository {
         return vacationDestination;
     }
 
-    public VacationDestination findById(Long id) {
-        EntityManager entityManager = EntityRepository.getEntityManager();
-        entityManager.getTransaction().begin();
-        VacationDestination vacationDestination = entityManager.find(VacationDestination.class, id);
-        entityManager.close();
-        return vacationDestination;
-    }
-
-    public void save(VacationDestination vacationDestination) {
-        EntityManager entityManager = EntityRepository.getEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.persist(vacationDestination);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-    }
-
-    public void deleteById(Long id) {
-        EntityManager entityManager = EntityRepository.getEntityManager();
-        entityManager.getTransaction().begin();
-        VacationDestination vacationDestination = entityManager.find(VacationDestination.class, id);
-        entityManager.remove(vacationDestination);
-        entityManager.getTransaction().commit();
-        entityManager.close();
-    }
 }

@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
 import java.time.LocalDate;
-import java.util.List;
 
 class VacationPackageServiceTest {
 
