@@ -2,6 +2,6 @@ package service.validators;
 
 import service.exceptions.InvalidInputException;
 
-public interface InputValidator {
-    void validate() throws InvalidInputException;
+public interface InputValidator<T> {
+    void validate(T entity) throws InvalidInputException;
 }

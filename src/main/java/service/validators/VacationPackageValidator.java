@@ -5,15 +5,10 @@ import service.exceptions.InvalidInputException;
 
 import java.time.LocalDate;
 
-public class VacationPackageValidator implements InputValidator {
-    private VacationPackage vacationPackage;
-
-    public VacationPackageValidator(VacationPackage vacationPackage) {
-        this.vacationPackage = vacationPackage;
-    }
+public class VacationPackageValidator implements InputValidator<VacationPackage> {
 
     @Override
-    public void validate() throws InvalidInputException {
+    public void validate(VacationPackage vacationPackage) throws InvalidInputException {
         validatePackageName(vacationPackage.getName());
         validatePeriod(vacationPackage.getStartDate(), vacationPackage.getEndDate());
         validatePrice(vacationPackage.getPrice());

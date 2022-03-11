@@ -1,10 +1,10 @@
 package service;
 
 import model.VacationPackage;
-import repository.VacationDestinationRepository;
 import repository.VacationPackageRepository;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
+import service.validators.InputValidator;
 import service.validators.VacationPackageValidator;
 
 import java.time.LocalDate;
@@ -12,11 +12,14 @@ import java.util.List;
 
 public class VacationPackageService {
     private static VacationPackageRepository vacationPackageRepository = VacationPackageRepository.getInstance();
-    private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
+    private InputValidator<VacationPackage> vacationPackageValidator;
+
+    public VacationPackageService() {
+        vacationPackageValidator = new VacationPackageValidator();
+    }
 
     public void add(VacationPackage vacationPackage) throws InvalidInputException {
-        VacationPackageValidator vacationPackageValidator = new VacationPackageValidator(vacationPackage);
-        vacationPackageValidator.validate();
+        vacationPackageValidator.validate(vacationPackage);
 
         if (vacationPackageRepository.findByName(vacationPackage.getName()) != null) {
             throw new InvalidInputException("Duplicate name! Another vacation package: " + vacationPackage.getName() + " with the same name has already been added!");
@@ -50,8 +53,7 @@ public class VacationPackageService {
     }
 
     public void edit(VacationPackage vacationPackage) throws InvalidInputException {
-        VacationPackageValidator vacationPackageValidator = new VacationPackageValidator(vacationPackage);
-        vacationPackageValidator.validate();
+        vacationPackageValidator.validate(vacationPackage);
 
         vacationPackageRepository.update(vacationPackage);
     }

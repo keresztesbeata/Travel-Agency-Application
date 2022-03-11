@@ -6,17 +6,12 @@ import service.exceptions.InvalidInputException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class UserValidator implements InputValidator {
+public class UserValidator implements InputValidator<User> {
     private static final int MAX_USERNAME_LENGTH = 100;
     private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-z])(?=.*[_.#@!&$]).{8,100}$";
-    private User user;
-
-    public UserValidator(User user) {
-        this.user = user;
-    }
 
     @Override
-    public void validate() throws InvalidInputException {
+    public void validate(User user) throws InvalidInputException {
         validateUsername(user.getUsername());
         validatePassword(user.getPassword());
     }

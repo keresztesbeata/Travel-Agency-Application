@@ -50,7 +50,7 @@ class VacationPackageServiceTest {
         Assertions.assertDoesNotThrow(() -> vacationPackageService.edit(vacationPackage));
         Assertions.assertEquals(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME).getPrice(), newPrice);
 
-        //Assertions.assertDoesNotThrow(() -> vacationPackageService.delete(SAMPLE_PACKAGE_NAME));
-       // Assertions.assertNull(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME));
+        Assertions.assertDoesNotThrow(() -> vacationPackageService.delete(SAMPLE_PACKAGE_NAME));
+        Assertions.assertNull(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME));
     }
 }
