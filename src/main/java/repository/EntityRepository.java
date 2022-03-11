@@ -31,26 +31,23 @@ public abstract class EntityRepository<T, L> {
         entityManager.close();
     }
 
-    public void delete(T entity) {
+    public void delete(L id) {
         EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.remove(entityManager.contains(entity) ? entity : entityManager.merge(entity));
+        T existingEntity = entityManager.find(type, id);
+        entityManager.remove(existingEntity);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
     public T findById(L id) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
-        T entity = entityManager.find(type, id);
-        entityManager.detach(entity);
-        entityManager.close();
-
-        return entity;
+        return entityManager.find(type, id);
     }
 
     public List<T> findAll() {
         EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
         Root<T> root = criteriaQuery.from(type);
@@ -63,10 +60,11 @@ public abstract class EntityRepository<T, L> {
 
     public T update(T entity) {
         EntityManager entityManager = getEntityManager();
-        EntityTransaction entityTransaction = entityManager.getTransaction();
+        entityManager.getTransaction().begin();
         T updatedEntity = entityManager.merge(entity);
-        entityTransaction.commit();
+        entityManager.getTransaction().commit();
         entityManager.close();
+
         return updatedEntity;
     }
 
