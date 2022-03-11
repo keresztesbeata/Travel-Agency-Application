@@ -37,7 +37,7 @@ public class VacationPackageService {
         if (vacationPackage == null) {
             throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it doesn't exist!");
         }
-        vacationPackageRepository.delete(vacationPackage);
+        vacationPackageRepository.delete(vacationPackage.getId());
     }
 
     public List<VacationPackage> findAll() {

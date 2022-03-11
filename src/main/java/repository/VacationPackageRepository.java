@@ -5,6 +5,7 @@ import model.VacationDestination;
 import model.VacationPackage;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -70,5 +71,6 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         entityManager.close();
         return vacationPackages;
     }
+
 
 }
