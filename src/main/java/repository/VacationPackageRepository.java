@@ -1,6 +1,5 @@
 package repository;
 
-import model.VacationDestination;
 import model.VacationPackage;
 
 import javax.persistence.EntityManager;
@@ -10,9 +9,9 @@ import java.util.List;
 public class VacationPackageRepository {
     private static VacationPackageRepository instance;
     private static final String SQL_QUERY_FIND_PACKAGE_BY_NAME = "select package from VacationPackage package where package.name = ?1";
-    private static final String SQL_QUERY_FIND_PACKAGE_BY_DESTINATION = "select package from VacationPackage package left join VacationDestination destination on package.vacationDestination = destination.id where package.vacation_destination = ?1";
+    private static final String SQL_QUERY_FIND_PACKAGE_BY_DESTINATION_NAME = "select package from VacationPackage package left join VacationDestination destination on package.vacationDestination = destination where destination.name = ?1";
     private static final String SQL_QUERY_FIND_PACKAGE_BY_PRICE = "select package from VacationPackage package where package.price >= ?1 and package.price <= ?2";
-    private static final String SQL_QUERY_FIND_PACKAGE_BY_PERIOD = "select package from VacationPackage package where package.startDate >= '?1' and package.endDate <= '?2'";
+    private static final String SQL_QUERY_FIND_PACKAGE_BY_PERIOD = "select package from VacationPackage package where package.startDate >= ?1 and package.endDate <= ?2";
 
     private VacationPackageRepository() {
     }
@@ -48,12 +47,12 @@ public class VacationPackageRepository {
         return vacationPackage;
     }
 
-    public List<VacationPackage> findByDestination(VacationDestination vacationDestination) {
+    public List<VacationPackage> findByDestinationName(String vacationDestinationName) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         List<VacationPackage> destinations = entityManager
-                .createQuery(SQL_QUERY_FIND_PACKAGE_BY_DESTINATION)
-                .setParameter(1, vacationDestination)
+                .createQuery(SQL_QUERY_FIND_PACKAGE_BY_DESTINATION_NAME)
+                .setParameter(1, vacationDestinationName)
                 .getResultList();
         entityManager.getTransaction().commit();
         entityManager.close();

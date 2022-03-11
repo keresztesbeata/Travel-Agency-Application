@@ -6,7 +6,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.print.attribute.standard.Destination;
 import java.time.LocalDate;
 
 @Entity
@@ -21,7 +20,7 @@ public class VacationPackage {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="vacation_destination_id")
+    @JoinColumn(name="vacationDestinationId")
     private VacationDestination vacationDestination;
 
     @Column(unique = true, nullable = false, length = 100)

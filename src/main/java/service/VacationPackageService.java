@@ -1,6 +1,5 @@
 package service;
 
-import model.VacationDestination;
 import model.VacationPackage;
 import repository.VacationDestinationRepository;
 import repository.VacationPackageRepository;
@@ -8,6 +7,7 @@ import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import service.validators.VacationPackageValidator;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class VacationPackageService {
@@ -37,13 +37,16 @@ public class VacationPackageService {
         return vacationPackageRepository.findByName(name);
     }
 
-    public List<VacationPackage> findByDestination(String destinationName) {
-        VacationDestination vacationDestination = vacationDestinationRepository.findByName(destinationName);
-        return vacationPackageRepository.findByDestination(vacationDestination);
+    public List<VacationPackage> findByDestinationName(String destinationName) {
+        return vacationPackageRepository.findByDestinationName(destinationName);
     }
 
     public List<VacationPackage> findByPrice(Double minPrice, Double maxPrice) {
         return vacationPackageRepository.findByPrice(minPrice, maxPrice);
+    }
+
+    public List<VacationPackage> findByPeriod(LocalDate startDate, LocalDate endDate) {
+        return vacationPackageRepository.findByPeriod(startDate, endDate);
     }
 
     public void edit(VacationPackage vacationPackage) throws InvalidInputException {
