@@ -3,6 +3,7 @@ package service;
 import model.VacationDestination;
 import model.VacationPackage;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -16,16 +17,17 @@ class VacationPackageServiceTest {
     @InjectMocks
     VacationDestinationService vacationDestinationService = new VacationDestinationService();
 
-    private final String SAMPLE_DESTINATION_NAME = "Zagreb";
+    private final String SAMPLE_DESTINATION_NAME = "Venice";
+    private final String SAMPLE_PACKAGE_NAME = "Trip to Italy";
 
     @Test
-    void add() {
+    void testCRUDOperations() {
         VacationDestination vacationDestination = new VacationDestination(SAMPLE_DESTINATION_NAME);
         Assertions.assertDoesNotThrow(() -> vacationDestinationService.add(vacationDestination));
 
         VacationPackage vacationPackage = new VacationPackage
                 .VacationPackageBuilder()
-                .withName("Trip to Croatia")
+                .withName(SAMPLE_PACKAGE_NAME)
                 .withDestination(vacationDestination)
                 .withDetails("5 star accomodation")
                 .withNrOfPeople(5L)
@@ -34,26 +36,12 @@ class VacationPackageServiceTest {
                 .build();
 
         Assertions.assertDoesNotThrow(() -> vacationPackageService.add(vacationPackage));
-    }
+        Assertions.assertNotNull(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME));
+        Assertions.assertFalse(vacationPackageService.findByPrice(1500d,3000d).isEmpty());
 
-    @Test
-    void delete() {
-    }
-
-    @Test
-    void findByName() {
-    }
-
-    @Test
-    void findByDestination() {
-
-    }
-
-    @Test
-    void findByPrice() {
-    }
-
-    @Test
-    void edit() {
+        double newPrice = 5000d;
+        vacationPackage.setPrice(newPrice);
+        Assertions.assertDoesNotThrow(() -> vacationPackageService.edit(vacationPackage));
+        Assertions.assertEquals(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME).getPrice(), newPrice);
     }
 }

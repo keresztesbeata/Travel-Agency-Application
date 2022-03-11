@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @ToString
 public class VacationPackage {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne

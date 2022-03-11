@@ -4,16 +4,15 @@ import model.VacationDestination;
 import model.VacationPackage;
 
 import javax.persistence.EntityManager;
-import javax.print.attribute.standard.Destination;
 import java.time.LocalDate;
 import java.util.List;
 
 public class VacationPackageRepository {
     private static VacationPackageRepository instance;
     private static final String SQL_QUERY_FIND_PACKAGE_BY_NAME = "select package from VacationPackage package where package.name = ?1";
-    private static final String SQL_QUERY_FIND_PACKAGE_BY_DESTINATION = "select package from VacationPackage package left join VacationDestination destination on package.destination_id = destination.id where package.destination = ?1";
+    private static final String SQL_QUERY_FIND_PACKAGE_BY_DESTINATION = "select package from VacationPackage package left join VacationDestination destination on package.vacationDestination = destination.id where package.vacation_destination = ?1";
     private static final String SQL_QUERY_FIND_PACKAGE_BY_PRICE = "select package from VacationPackage package where package.price >= ?1 and package.price <= ?2";
-    private static final String SQL_QUERY_FIND_PACKAGE_BY_PERIOD = "select package from VacationPackage package where date(package.startDate) >= '?1' and package.endDate <= '?2'";
+    private static final String SQL_QUERY_FIND_PACKAGE_BY_PERIOD = "select package from VacationPackage package where package.startDate >= '?1' and package.endDate <= '?2'";
 
     private VacationPackageRepository() {
     }
@@ -62,17 +61,43 @@ public class VacationPackageRepository {
     }
 
     public List<VacationPackage> findByPrice(Double minPrice, Double maxPrice) {
-        return null;
+        EntityManager entityManager = EntityRepository.getEntityManager();
+        entityManager.getTransaction().begin();
+        List<VacationPackage> destinations = entityManager
+                .createQuery(SQL_QUERY_FIND_PACKAGE_BY_PRICE)
+                .setParameter(1, minPrice)
+                .setParameter(2, maxPrice)
+                .getResultList();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return destinations;
     }
 
     public List<VacationPackage> findByPeriod(LocalDate startDate, LocalDate endDate) {
-        return null;
+        EntityManager entityManager = EntityRepository.getEntityManager();
+        entityManager.getTransaction().begin();
+        List<VacationPackage> destinations = entityManager
+                .createQuery(SQL_QUERY_FIND_PACKAGE_BY_PERIOD)
+                .setParameter(1, startDate)
+                .setParameter(2, endDate)
+                .getResultList();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+        return destinations;
     }
 
     public void save(VacationPackage vacationPackage) {
         EntityManager entityManager = EntityRepository.getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.persist(vacationPackage);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
+
+    public void update(VacationPackage vacationPackage) {
+        EntityManager entityManager = EntityRepository.getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.merge(vacationPackage);
         entityManager.getTransaction().commit();
         entityManager.close();
     }

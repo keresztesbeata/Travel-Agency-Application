@@ -37,8 +37,8 @@ public class VacationPackageService {
         return vacationPackageRepository.findByName(name);
     }
 
-    public List<VacationPackage> findByDestination(String name) {
-        VacationDestination vacationDestination = vacationDestinationRepository.findByName(name);
+    public List<VacationPackage> findByDestination(String destinationName) {
+        VacationDestination vacationDestination = vacationDestinationRepository.findByName(destinationName);
         return vacationPackageRepository.findByDestination(vacationDestination);
     }
 
@@ -46,7 +46,10 @@ public class VacationPackageService {
         return vacationPackageRepository.findByPrice(minPrice, maxPrice);
     }
 
-    public void edit(VacationPackage vacationPackage) throws InvalidOperationException {
-        //todo
+    public void edit(VacationPackage vacationPackage) throws InvalidInputException {
+        VacationPackageValidator vacationPackageValidator = new VacationPackageValidator(vacationPackage);
+        vacationPackageValidator.validate();
+
+        vacationPackageRepository.update(vacationPackage);
     }
 }
