@@ -2,23 +2,14 @@ package service.facade;
 
 import model.PackageStatus;
 import model.User;
-import model.VacationDestination;
 import model.VacationPackage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import repository.VacationPackageFilterModel;
-import service.exceptions.InvalidInputException;
-import service.managers.UserManager;
-import service.managers.VacationDestinationManager;
-import service.managers.VacationPackageManager;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 import static model.UserType.REGULAR_USER;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RegularUserServiceFacadeTest {
 

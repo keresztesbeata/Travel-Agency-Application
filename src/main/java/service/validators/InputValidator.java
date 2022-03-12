@@ -1,6 +1,6 @@
-package business.validators;
+package service.validators;
 
-import business.exceptions.InvalidInputException;
+import service.exceptions.InvalidInputException;
 
 public interface InputValidator<T> {
     void validate(T entity) throws InvalidInputException;

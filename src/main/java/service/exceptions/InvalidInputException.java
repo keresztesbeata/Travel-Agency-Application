@@ -1,4 +1,4 @@
-package business.exceptions;
+package service.exceptions;
 
 import lombok.NoArgsConstructor;
 
