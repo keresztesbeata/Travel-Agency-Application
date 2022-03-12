@@ -89,4 +89,20 @@ class VacationPackageServiceTest {
         Assertions.assertDoesNotThrow(() -> vacationPackageService.delete(validName));
         Assertions.assertNull(vacationPackageService.findByName(validName));
     }
+
+    @Order(value = 5)
+    @Test
+    void deleteCascading() {
+        String destinationName = "Tuscany";
+        List<VacationPackage> allPackages = vacationPackageService.findAll();
+
+        Assertions.assertDoesNotThrow(() -> vacationDestinationService.delete(destinationName));
+
+        vacationPackageService.withDestinationFilter(destinationName);
+        List<VacationPackage> remainingVacationPackages = vacationPackageService.filter();
+
+        Assertions.assertTrue(remainingVacationPackages.stream()
+                .noneMatch(vacationPackage -> vacationPackage.getVacationDestination().getName().equals(destinationName)));
+        Assertions.assertTrue(remainingVacationPackages.size() < allPackages.size());
+    }
 }
