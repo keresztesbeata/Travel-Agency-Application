@@ -1,0 +1,63 @@
+.dialog-pane {
+    -fx-display: none;
+    -fx-background-color: linear-gradient(to right, #833e47, #801a1a);
+    -fx-background-size:cover;
+    -fx-text-fill: white;
+    -fx-position: absolute;
+    -fx-width: 450px;
+    -fx-border-radius: 5px;
+    -fx-left: 50%;
+    -fx-margin-left: -160px;
+    -fx-padding: 16px 8px 8px;
+    -fx-box-sizing: border-box;
+}
+
+.dialog-pane .label {
+    -fx-font-size: 15px;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #413c3a;
+    -fx-text-fill: #f6e9dd;
+    -fx-padding: 6px 12px;
+    -fx-text-align: center;
+    -fx-text-decoration: none;
+    -fx-display: inline-block;
+    -fx-margin: 4px 2px;
+    -fx-transition-duration: 0.4s;
+    -fx-cursor: pointer;
+    -fx-font-size: 12px;
+    -fx-min-height: 30px;
+    -fx-border-color: white;
+}
+
+.dialog-pane .button:hover {
+    -fx-text-fill: black;
+    -fx-background-color: #efe0e3;
+    -fx-margin: 4px 2px;
+    -fx-border-color: black;
+}
+
+.dialog-pane {
+    -fx-display: none;
+    -fx-background-color: linear-gradient(to right, #833e47, #801a1a);
+    -fx-background-size:cover;
+    -fx-color: white;
+    -fx-position: absolute;
+    -fx-width: 450px;
+    -fx-border-radius: 5px;
+    -fx-left: 50%;
+    -fx-margin: 4px 2px;
+    -fx-margin-left: -160px;
+    -fx-padding: 16px 8px 8px;
+    -fx-box-sizing: border-box;
+}
+
+.dialog-pane .header {
+    -fx-background-color: #2f2e2b;
+    -fx-border-radius: 5px;
+    -fx-text-fill: white;
+    -fx-text-align: left;
+    -fx-padding: 10px 30px;
+}

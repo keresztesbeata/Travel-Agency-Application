@@ -11,7 +11,7 @@ import service.roles.RegularUserRole;
 import java.time.LocalDate;
 import java.util.List;
 
-public class RegularUserServiceFacade implements RegularUserRole {
+public class RegularUserServiceFacade extends UserService implements RegularUserRole {
     private UserManager userManager = new UserManager();
     private VacationPackageManager vacationPackageManager = new VacationPackageManager();
 
@@ -58,20 +58,5 @@ public class RegularUserServiceFacade implements RegularUserRole {
     @Override
     public void register(User user) throws InvalidInputException {
         userManager.register(user);
-    }
-
-    @Override
-    public void login(User user) throws InvalidInputException {
-        userManager.login(user);
-    }
-
-    @Override
-    public User getCurrentUser() {
-        return userManager.getCurrentUser();
-    }
-
-    @Override
-    public void logout() {
-        userManager.logout();
     }
 }

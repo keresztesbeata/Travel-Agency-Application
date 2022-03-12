@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 public class UserValidator implements InputValidator<User> {
     private static final int MAX_USERNAME_LENGTH = 100;
-    private static final String PASSWORD_REGEX = "^(?=.*[0-9a-zA-z_.#@!&$]).{4,100}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-z])(?=.*[_.#@!&$]).{4,100}$";
 
     @Override
     public void validate(User user) throws InvalidInputException {
@@ -17,7 +17,7 @@ public class UserValidator implements InputValidator<User> {
     }
 
     private void validateUsername(String username) throws InvalidInputException {
-        if (username == null) {
+        if (username == null || username.isEmpty()) {
             throw new InvalidInputException("The username should not be empty!");
         }
         if (username.length() > MAX_USERNAME_LENGTH) {
@@ -26,7 +26,7 @@ public class UserValidator implements InputValidator<User> {
     }
 
     private void validatePassword(String password) throws InvalidInputException {
-        if (password == null) {
+        if (password == null || password.isEmpty()) {
             throw new InvalidInputException("The password should not be empty!");
         }
         Pattern pattern = Pattern.compile(PASSWORD_REGEX);

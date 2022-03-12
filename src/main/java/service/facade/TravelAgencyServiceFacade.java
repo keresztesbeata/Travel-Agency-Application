@@ -1,37 +1,19 @@
 package service.facade;
 
 import model.PackageStatus;
-import model.User;
 import model.VacationDestination;
 import model.VacationPackage;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
-import service.managers.UserManager;
 import service.managers.VacationDestinationManager;
 import service.managers.VacationPackageManager;
 import service.roles.TravelAgencyRole;
 
 import java.util.List;
 
-public class TravelAgencyServiceFacade implements TravelAgencyRole {
-    private UserManager userManager = new UserManager();
+public class TravelAgencyServiceFacade extends UserService implements TravelAgencyRole {
     private VacationDestinationManager vacationDestinationManager = new VacationDestinationManager();
     private VacationPackageManager vacationPackageManager = new VacationPackageManager();
-
-    @Override
-    public void login(User user) throws InvalidInputException {
-        userManager.login(user);
-    }
-
-    @Override
-    public User getCurrentUser() {
-        return userManager.getCurrentUser();
-    }
-
-    @Override
-    public void logout() {
-        userManager.logout();
-    }
 
     @Override
     public void addVacationDestination(VacationDestination vacationDestination) throws InvalidInputException {

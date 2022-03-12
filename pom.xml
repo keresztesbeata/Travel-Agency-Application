@@ -13,6 +13,33 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
+    <build>
+        <plugins>
+                <plugin>
+                    <groupId>org.openjfx</groupId>
+                    <artifactId>javafx-maven-plugin</artifactId>
+                    <version>0.0.5</version>
+                    <configuration>
+                        <mainClass>Main</mainClass>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <!-- Build an executable JAR -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <mainClass>Main</mainClass>
+                            </manifest>
+                        </archive>
+                    </configuration>
+                </plugin>
+        </plugins>
+    </build>
+
     <dependencies>
 
         <dependency>
@@ -63,6 +90,30 @@
             <version>2.21.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>15.0.1</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-fxml -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>15.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-archetypes</artifactId>
+            <version>0.0.5</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-archetype-simple</artifactId>
+            <version>0.0.5</version>
+        </dependency>
+
 
     </dependencies>
 
