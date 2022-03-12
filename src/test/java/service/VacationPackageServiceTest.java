@@ -4,79 +4,89 @@ import model.PackageStatus;
 import model.VacationDestination;
 import model.VacationPackage;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import service.exceptions.InvalidInputException;
+import service.exceptions.InvalidOperationException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class VacationPackageServiceTest {
 
-    @InjectMocks
-    VacationPackageService vacationPackageService = new VacationPackageService();
+    private static VacationPackageService vacationPackageService = new VacationPackageService();
+    private static VacationDestinationService vacationDestinationService = new VacationDestinationService();
+    private static VacationPackage.VacationPackageBuilder basePackageBuilder;
+    private static VacationDestination vacationDestination;
+    private static LocalDate startDate;
+    private static LocalDate endDate;
 
-    @InjectMocks
-    VacationDestinationService vacationDestinationService = new VacationDestinationService();
-
-    private final String SAMPLE_DESTINATION_NAME_1 = "Florence";
-    private final String SAMPLE_DESTINATION_NAME_0 = "Venice";
-    private final String SAMPLE_PACKAGE_NAME_0 = "Trip to Italy";
-    private final String SAMPLE_PACKAGE_NAME_1 = "Trip to North of Italy";
-    private final String SAMPLE_DETAIL = "5 star accommodation";
-
-    @Test
-    void testCRUDOperations() {
-        VacationDestination vacationDestination = new VacationDestination(SAMPLE_DESTINATION_NAME_0);
-        Assertions.assertDoesNotThrow(() -> vacationDestinationService.add(vacationDestination));
-
-        LocalDate startDate = LocalDate.of(2022, 7, 20);
-        LocalDate endDate = LocalDate.of(2022, 7, 27);
-        VacationPackage vacationPackage = new VacationPackage
+    @BeforeAll
+    static void prepareData() {
+        vacationDestination = vacationDestinationService.findByName("Tuscany");
+        startDate = LocalDate.of(2022, 7, 20);
+        endDate = LocalDate.of(2022, 7, 27);
+        basePackageBuilder = new VacationPackage
                 .VacationPackageBuilder()
-                .withName(SAMPLE_PACKAGE_NAME_0)
                 .withDestination(vacationDestination)
-                .withDetails(SAMPLE_DETAIL)
+                .withDetails("Pizza, pasta, and a glass of good italian wine, the heart of the italian cuisine.")
                 .withNrOfPeople(5L)
-                .withPeriod(startDate, endDate)
-                .withPrice(2000d)
-                .build();
-
-        LocalDate startDate1 = LocalDate.of(2022, 10, 20);
-        LocalDate endDate1 = LocalDate.of(2022, 10, 27);
-        VacationPackage vacationPackage1 = new VacationPackage
-                .VacationPackageBuilder()
-                .withName(SAMPLE_PACKAGE_NAME_1)
-                .withDestination(vacationDestination)
-                .withDetails(SAMPLE_DETAIL)
-                .withNrOfPeople(5L)
-                .withPeriod(startDate1, endDate1)
-                .withPrice(2000d)
-                .build();
-
-        vacationPackage.setPackageStatus(PackageStatus.BOOKED);
-
-        Assertions.assertDoesNotThrow(() -> vacationPackageService.add(vacationPackage));
-        Assertions.assertDoesNotThrow(() -> vacationPackageService.add(vacationPackage1));
-
-        Assertions.assertNotNull(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME_0));
-        Assertions.assertFalse(vacationPackageService.findByPrice(1500d, 3000d).isEmpty());
-        Assertions.assertFalse(vacationPackageService.findByDestinationName(SAMPLE_DESTINATION_NAME_0).isEmpty());
-        Assertions.assertFalse(vacationPackageService.findByPeriod(startDate.minusDays(3), endDate.plusDays(2)).isEmpty());
-
-        List<PackageStatus> statusList = new ArrayList<>();
-        statusList.add(PackageStatus.BOOKED);
-        statusList.add(PackageStatus.NOT_BOOKED);
-        Assertions.assertEquals(2,vacationPackageService.findByPackageStatus(statusList).size());
-
-        Assertions.assertEquals(2,vacationPackageService.findAll().size());
-
-        double newPrice = 5000d;
-        vacationPackage.setPrice(newPrice);
-        Assertions.assertDoesNotThrow(() -> vacationPackageService.edit(vacationPackage));
-        Assertions.assertEquals(vacationPackageService.findByName(SAMPLE_PACKAGE_NAME_0).getPrice(), newPrice);
-
-        Assertions.assertDoesNotThrow(() -> vacationPackageService.delete(SAMPLE_PACKAGE_NAME_0));
+                .withPrice(2000d);
     }
 
+    @Order(value = 1)
+    @Test
+    public void add() {
+        VacationPackage validPackage = basePackageBuilder
+                .withName("Trip to Tuscany")
+                .withPeriod(startDate, endDate)
+                .build();
+        Assertions.assertDoesNotThrow(() -> vacationPackageService.add(validPackage));
+
+        VacationPackage invalidPackage = basePackageBuilder
+                .withName("Weekend in Italy")
+                .withPeriod(endDate, startDate)
+                .build();
+        Assertions.assertThrows(InvalidInputException.class, () -> vacationPackageService.add(invalidPackage));
+    }
+
+    @Order(value = 2)
+    @Test
+    public void findBy() {
+        List<VacationPackage> all = vacationPackageService.findAll();
+
+        vacationPackageService.withPackageStatusFilter(Arrays.asList(PackageStatus.NOT_BOOKED, PackageStatus.BOOKED, PackageStatus.IN_PROGRESS));
+        vacationPackageService.withContainsNameFilter("Trip");
+        vacationPackageService.preparePeriodFilter(startDate.minusDays(2), endDate.plusDays(4));
+        vacationPackageService.withPriceFilter(1000d, 4000d);
+        List<VacationPackage> vacationPackages = vacationPackageService.filter();
+
+        Assertions.assertTrue(vacationPackages.size() < all.size());
+    }
+
+    @Order(value = 3)
+    @Test
+    public void edit() {
+        VacationPackage vacationPackage = basePackageBuilder
+                .withName("Holiday in Hawaii")
+                .withPeriod(startDate, endDate)
+                .build();
+        Assertions.assertDoesNotThrow(() -> vacationPackageService.edit(vacationPackage));
+
+        vacationPackage.setName("Trip to Tuscany");
+        Assertions.assertThrows(InvalidInputException.class, () -> vacationPackageService.edit(vacationPackage));
+    }
+
+    @Order(value = 4)
+    @Test
+    public void delete() {
+        String invalidName = "Trip to Pisa";
+        String validName = "Visit Tuscany";
+
+        Assertions.assertThrows(InvalidOperationException.class, () -> vacationPackageService.delete(invalidName));
+        Assertions.assertDoesNotThrow(() -> vacationPackageService.delete(validName));
+        Assertions.assertNull(vacationPackageService.findByName(validName));
+    }
 }

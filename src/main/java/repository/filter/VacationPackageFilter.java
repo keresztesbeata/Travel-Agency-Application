@@ -1,4 +1,4 @@
-package repository;
+package repository.filter;
 
 import model.PackageStatus;
 import model.VacationDestination;
@@ -10,38 +10,51 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class VacationPackageFilter extends QueryFilter<VacationPackage> {
+
     public VacationPackageFilter(EntityManager entityManager) {
         super(entityManager, VacationPackage.class);
     }
 
-    public List<VacationPackage> filterByDestination(VacationDestination destination) {
+    public void addNameFilterPredicate(String name) {
+        addPredicate(containsName(name));
+    }
+
+    public void addDestinationFilterPredicate(VacationDestination destination) {
         addPredicate(equalDestination(destination));
-        return applyFilter();
     }
 
-    public List<VacationPackage> filterByPeriod(LocalDate startDate, LocalDate endDate) {
-        addPredicate(inBetweenPeriod(startDate, endDate));
-        return applyFilter();
-    }
-
-    public List<VacationPackage> filterByPrice(Double minPrice, Double maxPrice) {
+    public void addPriceFilterPredicate(Double minPrice, Double maxPrice) {
         addPredicate(inBetweenPrice(minPrice, maxPrice));
-        return applyFilter();
     }
 
-    public List<VacationPackage> filterByStatus(List<PackageStatus> packageStatuses) {
+    public void addStatusFilterPredicate(List<PackageStatus> packageStatuses) {
         addPredicate(hasStatus(packageStatuses));
-        return applyFilter();
+    }
+
+    public void addPeriodFilterPredicate(LocalDate startDate, LocalDate endDate) {
+        if(startDate != null) {
+            addPredicate(afterStartDate(startDate));
+        }
+
+        if(endDate != null) {
+            addPredicate(beforeEndDate(endDate));
+        }
     }
 
     private Predicate equalDestination(VacationDestination destination) {
         return criteriaBuilder.equal(root.get("vacationDestination"), destination);
     }
 
-    private Predicate inBetweenPeriod(LocalDate startDate, LocalDate endDate) {
-        return criteriaBuilder.and(
-                criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startDate),
-                criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate));
+    private Predicate afterStartDate(LocalDate startDate) {
+        return criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startDate);
+    }
+
+    private Predicate beforeEndDate(LocalDate endDate) {
+        return criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate);
+    }
+
+    private Predicate containsName(String name) {
+        return criteriaBuilder.like(root.get("name"), "%" + name + "%");
     }
 
     private Predicate inBetweenPrice(double minPrice, double maxPrice) {

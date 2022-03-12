@@ -31,6 +31,15 @@ public class VacationPackageService {
         vacationPackageRepository.save(vacationPackage);
     }
 
+    public void edit(VacationPackage vacationPackage) throws InvalidInputException {
+        vacationPackageValidator.validate(vacationPackage);
+
+        if (vacationPackageRepository.findByName(vacationPackage.getName()) != null) {
+            throw new InvalidInputException("Duplicate name! Another vacation package: " + vacationPackage.getName() + " with the same name has already been added!");
+        }
+        vacationPackageRepository.update(vacationPackage);
+    }
+
     public void delete(String name) throws InvalidOperationException {
         VacationPackage vacationPackage = vacationPackageRepository.findByName(name);
 
@@ -44,30 +53,39 @@ public class VacationPackageService {
         return vacationPackageRepository.findAll();
     }
 
-    public List<VacationPackage> findByPackageStatus(List<PackageStatus> packageStatuses) {
-        return vacationPackageRepository.findByPackageStatus(packageStatuses);
-    }
-
     public VacationPackage findByName(String name) {
         return vacationPackageRepository.findByName(name);
     }
 
-    public List<VacationPackage> findByDestinationName(String destinationName) {
+    public List<VacationPackage> filter() {
+        return vacationPackageRepository.filter();
+    }
+
+    public void withPackageStatusFilter(List<PackageStatus> packageStatuses) {
+        vacationPackageRepository.withPackageStatusFilter(packageStatuses);
+    }
+
+    public void withContainsNameFilter(String nameContained) {
+        vacationPackageRepository.withNameFilter(nameContained);
+    }
+
+    public void withDestinationFilter(String destinationName) {
         VacationDestination vacationDestination = vacationDestinationRepository.findByName(destinationName);
-        return vacationPackageRepository.findByDestination(vacationDestination);
+        vacationPackageRepository.withDestinationFilter(vacationDestination);
     }
 
-    public List<VacationPackage> findByPrice(Double minPrice, Double maxPrice) {
-        return vacationPackageRepository.findByPrice(minPrice, maxPrice);
+    public void withPriceFilter(Double minPrice, Double maxPrice) {
+        if(minPrice == null || minPrice < 0) {
+            minPrice = 0d;
+        }
+        if(maxPrice == null || maxPrice < 0) {
+            maxPrice = Double.MAX_VALUE;
+        }
+        vacationPackageRepository.withPriceFilter(minPrice, maxPrice);
     }
 
-    public List<VacationPackage> findByPeriod(LocalDate startDate, LocalDate endDate) {
-        return vacationPackageRepository.findByPeriod(startDate, endDate);
+    public void preparePeriodFilter(LocalDate startDate, LocalDate endDate) {
+        vacationPackageRepository.withPeriodFilter(startDate, endDate);
     }
 
-    public void edit(VacationPackage vacationPackage) throws InvalidInputException {
-        vacationPackageValidator.validate(vacationPackage);
-
-        vacationPackageRepository.update(vacationPackage);
-    }
 }

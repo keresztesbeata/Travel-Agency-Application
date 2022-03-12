@@ -3,18 +3,21 @@ package repository;
 import model.PackageStatus;
 import model.VacationDestination;
 import model.VacationPackage;
+import repository.filter.VacationPackageFilter;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.util.List;
 
 public class VacationPackageRepository extends EntityRepository<VacationPackage, Long> {
     private static VacationPackageRepository instance;
     private static final String SQL_QUERY_FIND_PACKAGE_BY_NAME = "select package from VacationPackage package where package.name = ?1";
+    private VacationPackageFilter vacationPackageFilter;
 
     private VacationPackageRepository() {
         super(VacationPackage.class);
+        EntityManager entityManager = getEntityManager();
+        vacationPackageFilter = new VacationPackageFilter(entityManager);
     }
 
     public static VacationPackageRepository getInstance() {
@@ -40,37 +43,35 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         return vacationPackage;
     }
 
-    public List<VacationPackage> findByPackageStatus(List<PackageStatus> packageStatuses) {
-        EntityManager entityManager = getEntityManager();
-        VacationPackageFilter vacationPackageFilter = new VacationPackageFilter(entityManager);
-        List<VacationPackage> vacationPackages = vacationPackageFilter.filterByStatus(packageStatuses);
-        entityManager.close();
+    @Override
+    public List<VacationPackage> findAll() {
+        List<VacationPackage> vacationPackages = super.findAll();
+        vacationPackageFilter.resetFilter();
         return vacationPackages;
     }
 
-    public List<VacationPackage> findByDestination(VacationDestination destination) {
-        EntityManager entityManager = getEntityManager();
-        VacationPackageFilter vacationPackageFilter = new VacationPackageFilter(entityManager);
-        List<VacationPackage> vacationPackages = vacationPackageFilter.filterByDestination(destination);
-        entityManager.close();
-        return vacationPackages;
+    public void withNameFilter(String name) {
+        vacationPackageFilter.addNameFilterPredicate(name);
     }
 
-    public List<VacationPackage> findByPrice(Double minPrice, Double maxPrice) {
-        EntityManager entityManager = getEntityManager();
-        VacationPackageFilter vacationPackageFilter = new VacationPackageFilter(entityManager);
-        List<VacationPackage> vacationPackages = vacationPackageFilter.filterByPrice(minPrice, maxPrice);
-        entityManager.close();
-        return vacationPackages;
+    public void withPackageStatusFilter(List<PackageStatus> packageStatuses) {
+        vacationPackageFilter.addStatusFilterPredicate(packageStatuses);
     }
 
-    public List<VacationPackage> findByPeriod(LocalDate startDate, LocalDate endDate) {
-        EntityManager entityManager = getEntityManager();
-        VacationPackageFilter vacationPackageFilter = new VacationPackageFilter(entityManager);
-        List<VacationPackage> vacationPackages = vacationPackageFilter.filterByPeriod(startDate, endDate);
-        entityManager.close();
-        return vacationPackages;
+    public void withDestinationFilter(VacationDestination destination) {
+        vacationPackageFilter.addDestinationFilterPredicate(destination);
     }
 
+    public void withPriceFilter(Double minPrice, Double maxPrice) {
+        vacationPackageFilter.addPriceFilterPredicate(minPrice, maxPrice);
+    }
+
+    public void withPeriodFilter(LocalDate startDate, LocalDate endDate) {
+        vacationPackageFilter.addPeriodFilterPredicate(startDate, endDate);
+    }
+
+    public List<VacationPackage> filter() {
+        return vacationPackageFilter.applyFilter();
+    }
 
 }

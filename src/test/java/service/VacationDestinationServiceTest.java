@@ -13,8 +13,8 @@ class VacationDestinationServiceTest {
     @InjectMocks
     VacationDestinationService vacationDestinationService = new VacationDestinationService();
 
-    private final String SAMPLE_DESTINATION_NAME = "Kastel Stari";
-    private final String SAMPLE_DESTINATION_NAME_TO_DELETE = "Plitvitze";
+    private final String SAMPLE_DESTINATION_NAME = "Zagreb";
+    private final String SAMPLE_DESTINATION_NAME_TO_DELETE = "Moscow";
     private final String INEXISTENT_DESTINATION_NAME = "Stari Kastel";
 
     @Order(value = 1)

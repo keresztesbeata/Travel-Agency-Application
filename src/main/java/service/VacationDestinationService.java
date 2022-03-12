@@ -8,6 +8,13 @@ import service.exceptions.InvalidOperationException;
 public class VacationDestinationService {
     private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
 
+    public VacationDestination findByName(String name) {
+        if(name != null) {
+            return vacationDestinationRepository.findByName(name);
+        }
+        return null;
+    }
+
     public void add(VacationDestination vacationDestination) throws InvalidInputException {
         String name = vacationDestination.getName();
         if (name == null) {

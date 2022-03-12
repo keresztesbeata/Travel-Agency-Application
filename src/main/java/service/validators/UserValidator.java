@@ -29,7 +29,7 @@ public class UserValidator implements InputValidator<User> {
         if (password == null) {
             throw new InvalidInputException("The password should not be empty!");
         }
-        Pattern pattern = Pattern.compile(PASSWORD_REGEX, Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(PASSWORD_REGEX);
         Matcher matcher = pattern.matcher(password);
 
         if (!matcher.matches()) {
