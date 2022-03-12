@@ -20,7 +20,7 @@ public class VacationPackage {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="vacationDestinationId")
+    @JoinColumn(name="vacationDestinationId", nullable = false)
     private VacationDestination vacationDestination;
 
     @Column(unique = true, nullable = false, length = 100)
