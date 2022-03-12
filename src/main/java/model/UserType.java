@@ -2,5 +2,5 @@ package model;
 
 public enum UserType {
     REGULAR_USER,
-    ADMIN
+    TRAVEL_AGENCY
 }

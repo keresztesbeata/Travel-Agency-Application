@@ -1,7 +1,7 @@
-package service.validators;
+package business.validators;
 
 import model.User;
-import service.exceptions.InvalidInputException;
+import business.exceptions.InvalidInputException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

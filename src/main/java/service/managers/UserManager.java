@@ -1,13 +1,15 @@
-package service;
+package service.managers;
 
+import service.validators.InputValidator;
+import service.validators.UserValidator;
 import model.User;
 import repository.UserRepository;
 import service.exceptions.InvalidInputException;
-import service.roles.UserRole;
 
-public class UserService implements UserRole {
+public class UserManager {
     private static UserRepository userRepository = UserRepository.getInstance();
-    private User currentUser;
+    private InputValidator<User> userValidator = new UserValidator();
+    private static Long userId;
 
     public void login(User user) throws InvalidInputException {
         if (user.getUsername() == null || user.getPassword() == null) {
@@ -20,15 +22,27 @@ public class UserService implements UserRole {
         if (!existingUser.getPassword().equals(user.getPassword())) {
             throw new InvalidInputException("Invalid password!");
         }
-        currentUser = existingUser;
+        userId = existingUser.getId();
+    }
+
+    public void register(User user) throws InvalidInputException {
+        userValidator.validate(user);
+
+        if (userRepository.findByUsername(user.getUsername()) != null) {
+            throw new InvalidInputException("The username: " + user.getUsername() + " is already taken! Please select another one!");
+        }
+        userRepository.save(user);
     }
 
     public void logout() {
-        currentUser = null;
+        userId = null;
     }
 
     public User getCurrentUser() {
-        return currentUser;
+        if(userId != null) {
+            return userRepository.findById(userId);
+        }
+        return null;
     }
 
 }

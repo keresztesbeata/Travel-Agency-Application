@@ -7,11 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
+import service.managers.VacationDestinationManager;
 
-class VacationDestinationServiceTest {
+class VacationDestinationManagerTest {
 
     @InjectMocks
-    VacationDestinationService vacationDestinationService = new VacationDestinationService();
+    VacationDestinationManager vacationDestinationManager = new VacationDestinationManager();
 
     private final String SAMPLE_DESTINATION_NAME = "Zagreb";
     private final String SAMPLE_DESTINATION_NAME_TO_DELETE = "Moscow";
@@ -21,19 +22,19 @@ class VacationDestinationServiceTest {
     @Test
     void add() {
         VacationDestination vacationDestination = new VacationDestination(SAMPLE_DESTINATION_NAME);
-        Assertions.assertDoesNotThrow(() -> vacationDestinationService.add(vacationDestination));
+        Assertions.assertDoesNotThrow(() -> vacationDestinationManager.add(vacationDestination));
 
         VacationDestination duplicateVacationDestination = new VacationDestination(SAMPLE_DESTINATION_NAME);
-        Assertions.assertThrows(InvalidInputException.class, () -> vacationDestinationService.add(duplicateVacationDestination));
+        Assertions.assertThrows(InvalidInputException.class, () -> vacationDestinationManager.add(duplicateVacationDestination));
     }
 
     @Order(value = 2)
     @Test
     void delete() {
         VacationDestination vacationDestination = new VacationDestination(SAMPLE_DESTINATION_NAME_TO_DELETE);
-        Assertions.assertDoesNotThrow(() -> vacationDestinationService.add(vacationDestination));
-        Assertions.assertDoesNotThrow(() -> vacationDestinationService.delete(SAMPLE_DESTINATION_NAME_TO_DELETE));
+        Assertions.assertDoesNotThrow(() -> vacationDestinationManager.add(vacationDestination));
+        Assertions.assertDoesNotThrow(() -> vacationDestinationManager.delete(SAMPLE_DESTINATION_NAME_TO_DELETE));
 
-        Assertions.assertThrows(InvalidOperationException.class, () -> vacationDestinationService.delete(INEXISTENT_DESTINATION_NAME));
+        Assertions.assertThrows(InvalidOperationException.class, () -> vacationDestinationManager.delete(INEXISTENT_DESTINATION_NAME));
     }
 }

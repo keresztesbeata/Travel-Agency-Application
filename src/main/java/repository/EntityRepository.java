@@ -1,7 +1,5 @@
 package repository;
 
-import repository.filter.QueryFilter;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -69,8 +67,5 @@ public abstract class EntityRepository<T, L> {
         return updatedEntity;
     }
 
-    protected List<T> findByCriteria(QueryFilter<T> queryFilter) {
-        return queryFilter.applyFilter();
-    }
 }
 

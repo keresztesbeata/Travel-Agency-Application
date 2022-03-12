@@ -3,10 +3,10 @@ package model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,14 +14,13 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
 public class VacationPackage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="vacationDestinationId", nullable = false)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "vacationDestinationId", nullable = false)
     private VacationDestination vacationDestination;
 
     @Column(unique = true, nullable = false, length = 100)
@@ -37,7 +36,7 @@ public class VacationPackage {
     private LocalDate endDate;
 
     @Column(nullable = false)
-    private Integer nrOfPeople;
+    private Integer maxNrOfBookings;
 
     @Column
     private Integer nrOfBookings;
@@ -49,19 +48,27 @@ public class VacationPackage {
     @Enumerated(EnumType.STRING)
     private PackageStatus packageStatus;
 
-    @ManyToMany(mappedBy = "vacationPackage")
-    private Set<User> users;
+    @ManyToMany(mappedBy = "vacationPackages")
+    private Set<User> users = new HashSet<>();
 
-    private VacationPackage(String name, Double price, LocalDate startDate, LocalDate endDate, Integer nrOfPeople, String details, VacationDestination vacationDestination) {
+    private VacationPackage(String name, Double price, LocalDate startDate, LocalDate endDate, Integer maxNrOfBookings, String details, VacationDestination vacationDestination) {
         this.name = name;
         this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.nrOfPeople = nrOfPeople;
+        this.maxNrOfBookings = maxNrOfBookings;
         this.nrOfBookings = 0;
         this.details = details;
         this.vacationDestination = vacationDestination;
         this.packageStatus = PackageStatus.NOT_BOOKED;
+    }
+
+    public void incrementNrOfBookings() {
+        nrOfBookings++;
+    }
+
+    public void addUser(User user) {
+        users.add(user);
     }
 
     public static class VacationPackageBuilder {
@@ -70,11 +77,11 @@ public class VacationPackage {
         private Double price;
         private LocalDate startDate;
         private LocalDate endDate;
-        private Integer nrOfPeople;
+        private Integer maxCapacity;
         private String details;
 
-        public VacationPackageBuilder withNrOfPeople(Integer nrOfPeople) {
-            this.nrOfPeople = nrOfPeople;
+        public VacationPackageBuilder withMaxCapacity(Integer maxCapacity) {
+            this.maxCapacity = maxCapacity;
             return this;
         }
 
@@ -105,7 +112,23 @@ public class VacationPackage {
         }
 
         public VacationPackage build() {
-            return new VacationPackage(name, price, startDate, endDate, nrOfPeople, details, vacationDestination);
+            return new VacationPackage(name, price, startDate, endDate, maxCapacity, details, vacationDestination);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "VacationPackage{" +
+                "id=" + id +
+                ", vacationDestination=" + vacationDestination +
+                ", name='" + name + '\'' +
+                ", price=" + price +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", maxNrOfBookings=" + maxNrOfBookings +
+                ", nrOfBookings=" + nrOfBookings +
+                ", details='" + details + '\'' +
+                ", packageStatus=" + packageStatus +
+                '}';
     }
 }

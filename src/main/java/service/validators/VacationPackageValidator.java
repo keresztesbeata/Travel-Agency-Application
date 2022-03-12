@@ -1,7 +1,7 @@
-package service.validators;
+package business.validators;
 
 import model.VacationPackage;
-import service.exceptions.InvalidInputException;
+import business.exceptions.InvalidInputException;
 
 import java.time.LocalDate;
 
@@ -12,7 +12,7 @@ public class VacationPackageValidator implements InputValidator<VacationPackage>
         validatePackageName(vacationPackage.getName());
         validatePeriod(vacationPackage.getStartDate(), vacationPackage.getEndDate());
         validatePrice(vacationPackage.getPrice());
-        validateNrOfPeople(vacationPackage.getNrOfPeople());
+        validateNrOfPeople(vacationPackage.getMaxNrOfBookings());
     }
 
     private void validatePeriod(LocalDate startDate, LocalDate endDate) throws InvalidInputException {

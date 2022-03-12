@@ -1,11 +1,13 @@
-package service;
+package service.managers;
 
-import model.VacationDestination;
-import repository.VacationDestinationRepository;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
+import model.VacationDestination;
+import repository.VacationDestinationRepository;
 
-public class VacationDestinationService {
+import java.util.List;
+
+public class VacationDestinationManager {
     private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
 
     public VacationDestination findByName(String name) {
@@ -13,6 +15,10 @@ public class VacationDestinationService {
             return vacationDestinationRepository.findByName(name);
         }
         return null;
+    }
+
+    public List<VacationDestination> findAll() {
+        return vacationDestinationRepository.findAll();
     }
 
     public void add(VacationDestination vacationDestination) throws InvalidInputException {

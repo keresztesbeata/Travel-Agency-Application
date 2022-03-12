@@ -5,9 +5,9 @@ import model.VacationDestination;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-public class VacationDestinationRepository extends EntityRepository<VacationDestination, Long>{
+public class VacationDestinationRepository extends EntityRepository<VacationDestination, Long> {
     private static VacationDestinationRepository instance;
-    private static final String SQL_QUERY_FIND_DESTINATION_BY_NAME = "select destination from VacationDestination destination where destination.name = ?1";
+    private static final String SQL_QUERY_FIND_DESTINATION_BY_NAME = "select destination from VacationDestination destination left join fetch destination.vacationPackages where destination.name = ?1";
 
     private VacationDestinationRepository() {
         super(VacationDestination.class);
@@ -22,7 +22,6 @@ public class VacationDestinationRepository extends EntityRepository<VacationDest
 
     public VacationDestination findByName(String name) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
         VacationDestination vacationDestination = null;
         List<VacationDestination> destinations = entityManager
                 .createQuery(SQL_QUERY_FIND_DESTINATION_BY_NAME)
@@ -32,9 +31,6 @@ public class VacationDestinationRepository extends EntityRepository<VacationDest
         if (!destinations.isEmpty()) {
             vacationDestination = destinations.get(0);
         }
-        entityManager.getTransaction().commit();
-        entityManager.close();
-
         return vacationDestination;
     }
 
