@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "vacation_package")
@@ -36,7 +37,10 @@ public class VacationPackage {
     private LocalDate endDate;
 
     @Column(nullable = false)
-    private Long nrOfPeople;
+    private Integer nrOfPeople;
+
+    @Column
+    private Integer nrOfBookings;
 
     @Column
     private String details;
@@ -45,12 +49,16 @@ public class VacationPackage {
     @Enumerated(EnumType.STRING)
     private PackageStatus packageStatus;
 
-    private VacationPackage(String name, Double price, LocalDate startDate, LocalDate endDate, Long nrOfPeople, String details, VacationDestination vacationDestination) {
+    @ManyToMany(mappedBy = "vacationPackage")
+    private Set<User> users;
+
+    private VacationPackage(String name, Double price, LocalDate startDate, LocalDate endDate, Integer nrOfPeople, String details, VacationDestination vacationDestination) {
         this.name = name;
         this.price = price;
         this.startDate = startDate;
         this.endDate = endDate;
         this.nrOfPeople = nrOfPeople;
+        this.nrOfBookings = 0;
         this.details = details;
         this.vacationDestination = vacationDestination;
         this.packageStatus = PackageStatus.NOT_BOOKED;
@@ -62,10 +70,10 @@ public class VacationPackage {
         private Double price;
         private LocalDate startDate;
         private LocalDate endDate;
-        private Long nrOfPeople;
+        private Integer nrOfPeople;
         private String details;
 
-        public VacationPackageBuilder withNrOfPeople(Long nrOfPeople) {
+        public VacationPackageBuilder withNrOfPeople(Integer nrOfPeople) {
             this.nrOfPeople = nrOfPeople;
             return this;
         }

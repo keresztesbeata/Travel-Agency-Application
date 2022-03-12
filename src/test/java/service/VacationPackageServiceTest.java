@@ -32,7 +32,7 @@ class VacationPackageServiceTest {
                 .VacationPackageBuilder()
                 .withDestination(vacationDestination)
                 .withDetails("Pizza, pasta, and a glass of good italian wine, the heart of the italian cuisine.")
-                .withNrOfPeople(5L)
+                .withNrOfPeople(5)
                 .withPrice(2000d);
     }
 

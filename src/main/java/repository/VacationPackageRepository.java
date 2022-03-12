@@ -1,6 +1,7 @@
 package repository;
 
 import model.PackageStatus;
+import model.User;
 import model.VacationDestination;
 import model.VacationPackage;
 import repository.filter.VacationPackageFilter;
@@ -12,6 +13,7 @@ import java.util.List;
 public class VacationPackageRepository extends EntityRepository<VacationPackage, Long> {
     private static VacationPackageRepository instance;
     private static final String SQL_QUERY_FIND_PACKAGE_BY_NAME = "select package from VacationPackage package where package.name = ?1";
+    private static final String SQL_QUERY_FIND_PACKAGES_OF_USER = "select package from VacationPackage package where ?1 in (package.users)";
     private VacationPackageFilter vacationPackageFilter;
 
     private VacationPackageRepository() {
@@ -47,6 +49,16 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
     public List<VacationPackage> findAll() {
         List<VacationPackage> vacationPackages = super.findAll();
         vacationPackageFilter.resetFilter();
+        return vacationPackages;
+    }
+
+    public List<VacationPackage> findAllBookedVacationPackagesOfUser(User user) {
+        EntityManager entityManager = getEntityManager();
+        List<VacationPackage> vacationPackages = entityManager
+                .createQuery(SQL_QUERY_FIND_PACKAGES_OF_USER)
+                .setParameter(1, user)
+                .getResultList();
+        entityManager.close();
         return vacationPackages;
     }
 

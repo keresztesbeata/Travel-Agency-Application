@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name="user")
@@ -27,6 +28,12 @@ public class User {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserType userType;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="booking",
+        joinColumns = @JoinColumn(name="userId"),
+        inverseJoinColumns = @JoinColumn(name="vacationPackageId"))
+    private Set<VacationPackage> vacationPackages;
 
     public User(String username, String password, UserType userType) {
         this.username = username;

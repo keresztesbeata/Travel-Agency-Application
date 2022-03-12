@@ -7,25 +7,29 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import service.exceptions.InvalidInputException;
+import service.roles.RegularUserRole;
+import service.roles.UserRole;
 
 class UserServiceTest {
 
     @InjectMocks
-    UserService userService = new UserService();
+    UserRole userService = new UserService();
 
     @Order(value = 1)
     @Test
     void register() {
+        RegularUserRole regularUserRole = (RegularUserRole)userService;
+
         User validUser = new User("jack@sparrow", "Black.Pearl1", UserType.REGULAR_USER);
-        Assertions.assertDoesNotThrow(() -> userService.register(validUser));
+        Assertions.assertDoesNotThrow(() -> regularUserRole.register(validUser));
 
         User userWithInvalidUsername = new User(null, "blackpearl", UserType.REGULAR_USER);
-        Assertions.assertThrows(InvalidInputException.class, () -> userService.register(userWithInvalidUsername));
+        Assertions.assertThrows(InvalidInputException.class, () -> regularUserRole.register(userWithInvalidUsername));
 
         User userWithInvalidPassword = new User("david@jones", "heart", UserType.REGULAR_USER);
-        Assertions.assertThrows(InvalidInputException.class, () -> userService.register(userWithInvalidPassword));
+        Assertions.assertThrows(InvalidInputException.class, () -> regularUserRole.register(userWithInvalidPassword));
 
-        Assertions.assertNull(userService.getCurrentUser());
+        Assertions.assertNull(regularUserRole.getCurrentUser());
     }
 
     @Order(value = 2)
@@ -49,7 +53,7 @@ class UserServiceTest {
     @Test
     void logout() {
         User validUser = new User("black@beard", "Black.Bird1", UserType.REGULAR_USER);
-        Assertions.assertDoesNotThrow(() -> userService.register(validUser));
+        Assertions.assertDoesNotThrow(() -> ((RegularUserRole) userService).register(validUser));
         Assertions.assertDoesNotThrow(() -> userService.login(validUser));
         Assertions.assertNotNull(userService.getCurrentUser());
         userService.logout();

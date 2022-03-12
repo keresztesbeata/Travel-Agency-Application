@@ -34,6 +34,8 @@ public abstract class QueryFilter<T> {
 
     public List<T> applyFilter() {
         criteriaQuery.select(root).where(predicate);
-        return entityManager.createQuery(criteriaQuery).getResultList();
+        List<T> result = entityManager.createQuery(criteriaQuery).getResultList();
+        resetFilter();
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package service;
 
 import model.PackageStatus;
+import model.User;
 import model.VacationDestination;
 import model.VacationPackage;
 import repository.VacationDestinationRepository;
@@ -46,6 +47,10 @@ public class VacationPackageService {
         if (vacationPackage == null) {
             throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it doesn't exist!");
         }
+
+        if (vacationPackage.getPackageStatus().equals(PackageStatus.NOT_BOOKED) && !vacationPackage.getUsers().isEmpty()) {
+            throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it is booked by some users!");
+        }
         vacationPackageRepository.delete(vacationPackage.getId());
     }
 
@@ -75,10 +80,10 @@ public class VacationPackageService {
     }
 
     public void withPriceFilter(Double minPrice, Double maxPrice) {
-        if(minPrice == null || minPrice < 0) {
+        if (minPrice == null || minPrice < 0) {
             minPrice = 0d;
         }
-        if(maxPrice == null || maxPrice < 0) {
+        if (maxPrice == null || maxPrice < 0) {
             maxPrice = Double.MAX_VALUE;
         }
         vacationPackageRepository.withPriceFilter(minPrice, maxPrice);
@@ -87,5 +92,6 @@ public class VacationPackageService {
     public void preparePeriodFilter(LocalDate startDate, LocalDate endDate) {
         vacationPackageRepository.withPeriodFilter(startDate, endDate);
     }
+
 
 }

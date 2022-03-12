@@ -9,7 +9,7 @@ public class VacationDestinationService {
     private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
 
     public VacationDestination findByName(String name) {
-        if(name != null) {
+        if (name != null) {
             return vacationDestinationRepository.findByName(name);
         }
         return null;
