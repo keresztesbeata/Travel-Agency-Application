@@ -1,14 +1,14 @@
-package business.validators;
+package service.validators;
 
 import model.User;
-import business.exceptions.InvalidInputException;
+import service.exceptions.InvalidInputException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class UserValidator implements InputValidator<User> {
     private static final int MAX_USERNAME_LENGTH = 100;
-    private static final String PASSWORD_REGEX = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-z])(?=.*[_.#@!&$]).{8,100}$";
+    private static final String PASSWORD_REGEX = "^(?=.*[0-9a-zA-z_.#@!&$]).{4,100}$";
 
     @Override
     public void validate(User user) throws InvalidInputException {
@@ -33,7 +33,7 @@ public class UserValidator implements InputValidator<User> {
         Matcher matcher = pattern.matcher(password);
 
         if (!matcher.matches()) {
-            throw new InvalidInputException("The password: " + password + " has an invalid format! It should contain at least 1 digit and a special character from '.','_' or '#'!");
+            throw new InvalidInputException("The password: " + password + " has an invalid format! It should contain at least 1 digit, uppercase and lower case letters, and a special character from '.','_','@','&','$','#' or '!'");
         }
     }
 }

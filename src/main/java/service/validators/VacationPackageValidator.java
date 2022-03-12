@@ -1,7 +1,7 @@
-package business.validators;
+package service.validators;
 
 import model.VacationPackage;
-import business.exceptions.InvalidInputException;
+import service.exceptions.InvalidInputException;
 
 import java.time.LocalDate;
 
@@ -30,7 +30,7 @@ public class VacationPackageValidator implements InputValidator<VacationPackage>
         }
     }
 
-    private void validateNrOfPeople(Long nrOfPeople) throws InvalidInputException {
+    private void validateNrOfPeople(Integer nrOfPeople) throws InvalidInputException {
         if (nrOfPeople == null) {
             throw new InvalidInputException("The nr of people cannot be a missing!");
         }
