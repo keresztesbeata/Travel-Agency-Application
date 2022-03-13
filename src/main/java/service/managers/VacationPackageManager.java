@@ -4,6 +4,7 @@ import model.PackageStatus;
 import model.User;
 import model.VacationDestination;
 import model.VacationPackage;
+import repository.FilterConditions;
 import repository.UserRepository;
 import repository.VacationDestinationRepository;
 import repository.VacationPackageRepository;
@@ -12,7 +13,6 @@ import service.exceptions.InvalidOperationException;
 import service.validators.InputValidator;
 import service.validators.VacationPackageValidator;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,7 +63,10 @@ public class VacationPackageManager {
     public void deletePackagesOfDestination(String vacationDestinationName) {
         VacationDestination vacationDestination = vacationDestinationRepository.findByName(vacationDestinationName);
         if (vacationDestination != null) {
-            vacationPackageRepository.filterByDestination(vacationDestination)
+            FilterConditions filterByDestination = new FilterConditions.FilterConditionsBuilder()
+                    .withDestinationName(vacationDestinationName)
+                    .build();
+            vacationPackageRepository.filterByConditions(filterByDestination)
                     .stream()
                     .map(VacationPackage::getId)
                     .forEach(id -> vacationPackageRepository.delete(id));
@@ -82,33 +85,11 @@ public class VacationPackageManager {
         return vacationPackageRepository.filterByStatus(packageStatuses);
     }
 
-    public List<VacationPackage> filterVacationPackagesByDestination(String destination) {
-        VacationDestination vacationDestination = vacationDestinationRepository.findByName(destination);
-        if (vacationDestination == null) {
-            return findAll();
+    public List<VacationPackage> filterByConditions(FilterConditions filterConditions) {
+        if (filterConditions.getDestinationName().isPresent()) {
+            filterConditions.setVacationDestination(vacationDestinationRepository.findByName(filterConditions.getDestinationName().get()));
         }
-        return vacationPackageRepository.filterByDestination(vacationDestination);
-    }
-
-    public List<VacationPackage> filterVacationPackagesByPeriod(LocalDate startDate, LocalDate endDate) {
-        if (startDate != null && endDate != null) {
-            return vacationPackageRepository.filterByPeriod(startDate, endDate);
-        }
-        if (startDate != null) {
-            return vacationPackageRepository.filterByStartDate(startDate);
-        }
-        if (endDate != null) {
-            return vacationPackageRepository.filterByEndDate(endDate);
-        }
-        return findAll();
-    }
-
-    public List<VacationPackage> filterVacationPackagesByPrice(Double minPrice, Double maxPrice) {
-        return vacationPackageRepository.filterByPrice(minPrice, maxPrice);
-    }
-
-    public List<VacationPackage> filterVacationPackagesByKeyword(String keyword) {
-        return vacationPackageRepository.filterByKeyword(keyword);
+        return vacationPackageRepository.filterByConditions(filterConditions);
     }
 
     public List<VacationPackage> findBookedVacationPackagesOfUser(User user) {

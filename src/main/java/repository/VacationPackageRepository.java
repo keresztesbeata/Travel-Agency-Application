@@ -14,12 +14,6 @@ import java.util.List;
 
 public class VacationPackageRepository extends EntityRepository<VacationPackage, Long> {
     private static VacationPackageRepository instance;
-
-    private static final String SQL_QUERY_FIND_PACKAGE_BY_NAME = "select package from VacationPackage package left join fetch package.vacationDestination where package.name = ?1";
-    private static final String SQL_QUERY_FILTER_BY_PRICE = "select package from VacationPackage package where package.price >= ?1 and package.price <= ?2";
-    private static final String SQL_QUERY_FILTER_BY_PERIOD = "select package from VacationPackage package where package.startDate >= ?1 and package.endDate <= ?2";
-    private static final String SQL_QUERY_FILTER_BY_START_DATE = "select package from VacationPackage package where package.startDate >= ?1";
-    private static final String SQL_QUERY_FILTER_BY_END_DATE = "select package from VacationPackage package where package.endDate <= ?1";
     private static final String SQL_DELETE_FROM_JOINED_TABLE_BY_ID = "delete from user_vacation_package where vacation_package_id = :id";
 
     private VacationPackageRepository() {
@@ -46,51 +40,21 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
 
     public VacationPackage findByName(String name) {
         EntityManager entityManager = getEntityManager();
-        VacationPackage vacationPackage = null;
-        List<VacationPackage> vacationPackages = entityManager
-                .createQuery(SQL_QUERY_FIND_PACKAGE_BY_NAME)
-                .setParameter(1, name)
+        entityManager.getTransaction().begin();
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<VacationPackage> criteriaQuery = criteriaBuilder.createQuery(VacationPackage.class);
+        Root<VacationPackage> root = criteriaQuery.from(VacationPackage.class);
+        Predicate condition = criteriaBuilder.like(root.get("name"), name);
+        criteriaQuery.select(root).where(condition);
+        List<VacationPackage> result = entityManager.createQuery(criteriaQuery)
                 .getResultList();
-        if (!vacationPackages.isEmpty()) {
-            vacationPackage = vacationPackages.get(0);
+        VacationPackage vacationPackage = null;
+        if (!result.isEmpty()) {
+            vacationPackage = result.get(0);
         }
+        entityManager.close();
         return vacationPackage;
     }
-
-    public List<VacationPackage> filterByPrice(Double minPrice, Double maxPrice) {
-        EntityManager entityManager = getEntityManager();
-        return (List<VacationPackage>) entityManager
-                .createQuery(SQL_QUERY_FILTER_BY_PRICE)
-                .setParameter(1, minPrice)
-                .setParameter(2, maxPrice)
-                .getResultList();
-    }
-
-    public List<VacationPackage> filterByPeriod(LocalDate startDate, LocalDate endDate) {
-        EntityManager entityManager = getEntityManager();
-        return (List<VacationPackage>) entityManager
-                .createQuery(SQL_QUERY_FILTER_BY_PERIOD)
-                .setParameter(1, startDate)
-                .setParameter(2, endDate)
-                .getResultList();
-    }
-
-    public List<VacationPackage> filterByStartDate(LocalDate startDate) {
-        EntityManager entityManager = getEntityManager();
-        return (List<VacationPackage>) entityManager
-                .createQuery(SQL_QUERY_FILTER_BY_START_DATE)
-                .setParameter(1, startDate)
-                .getResultList();
-    }
-
-    public List<VacationPackage> filterByEndDate(LocalDate endDate) {
-        EntityManager entityManager = getEntityManager();
-        return (List<VacationPackage>) entityManager
-                .createQuery(SQL_QUERY_FILTER_BY_END_DATE)
-                .setParameter(1, endDate)
-                .getResultList();
-    }
-
 
     public List<VacationPackage> filterByStatus(List<PackageStatus> packageStatuses) {
         EntityManager entityManager = getEntityManager();
@@ -112,13 +76,13 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         return result;
     }
 
-    public List<VacationPackage> filterByKeyword(String keyword) {
+    public List<VacationPackage> filterByConditions(FilterConditions filterConditions) {
         EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<VacationPackage> criteriaQuery = criteriaBuilder.createQuery(VacationPackage.class);
         Root<VacationPackage> root = criteriaQuery.from(VacationPackage.class);
-        Predicate condition = criteriaBuilder.like(root.get("name"), "%" + keyword + "%");
+        Predicate condition = createFilterPredicate(criteriaBuilder, root, filterConditions);
         criteriaQuery.select(root).where(condition);
         List<VacationPackage> result = entityManager.createQuery(criteriaQuery)
                 .getResultList();
@@ -126,17 +90,67 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         return result;
     }
 
-    public List<VacationPackage> filterByDestination(VacationDestination vacationDestination) {
-        EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<VacationPackage> criteriaQuery = criteriaBuilder.createQuery(VacationPackage.class);
-        Root<VacationPackage> root = criteriaQuery.from(VacationPackage.class);
-        Predicate condition = criteriaBuilder.equal(root.get("vacationDestination"), vacationDestination);
-        criteriaQuery.select(root).where(condition);
-        List<VacationPackage> result = entityManager.createQuery(criteriaQuery)
-                .getResultList();
-        entityManager.close();
-        return result;
+    private Predicate createFilterPredicate(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, FilterConditions filterConditions) {
+        Predicate condition = criteriaBuilder.and();
+        if (filterConditions.getStartDate().isPresent()) {
+            condition = addAfterStartDateCondition(criteriaBuilder, root, condition, filterConditions.getStartDate().get());
+        }
+        if (filterConditions.getEndDate().isPresent()) {
+            condition = addBeforeEndDateCondition(criteriaBuilder, root, condition, filterConditions.getEndDate().get());
+        }
+        if (filterConditions.getKeyword().isPresent()) {
+            condition = addContainsKeywordCondition(criteriaBuilder, root, condition, filterConditions.getKeyword().get());
+        }
+        if (filterConditions.getDestinationName().isPresent()) {
+            condition = addHasDestinationCondition(criteriaBuilder, root, condition, filterConditions.getVacationDestination());
+        }
+        if (filterConditions.getMinPrice().isPresent()) {
+            condition = addMinPriceCondition(criteriaBuilder, root, condition, filterConditions.getMinPrice().get());
+        }
+        if (filterConditions.getMaxPrice().isPresent()) {
+            condition = addMaxPriceCondition(criteriaBuilder, root, condition, filterConditions.getMaxPrice().get());
+        }
+        if (filterConditions.isAvailable()) {
+            condition = addAvailabilityCondition(criteriaBuilder, root, condition);
+        }
+        return condition;
     }
+
+    public Predicate addMinPriceCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, Double minPrice) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.gt(root.get("price"), minPrice));
+    }
+
+    public Predicate addMaxPriceCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, Double maxPrice) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.lt(root.get("price"), maxPrice));
+    }
+
+    public Predicate addHasDestinationCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, VacationDestination vacationDestination) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.equal(root.get("vacationDestination"), vacationDestination));
+    }
+
+    private Predicate addContainsKeywordCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, String keyword) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.like(root.get("name"), "%" + keyword + "%"));
+    }
+
+    private Predicate addAfterStartDateCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, LocalDate startDate) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startDate));
+    }
+
+    private Predicate addBeforeEndDateCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, LocalDate endDate) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate));
+    }
+
+    private Predicate addAvailabilityCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition) {
+        return criteriaBuilder.and(condition,
+                criteriaBuilder.or(
+                        criteriaBuilder.equal(root.get("packageStatus"), PackageStatus.NOT_BOOKED),
+                        criteriaBuilder.equal(root.get("packageStatus"), PackageStatus.IN_PROGRESS)));
+    }
+
 }

@@ -2,13 +2,13 @@ package service.facade;
 
 import model.User;
 import model.VacationPackage;
+import repository.FilterConditions;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import service.managers.UserManager;
 import service.managers.VacationPackageManager;
 import service.roles.RegularUserRole;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class RegularUserServiceFacade extends UserService implements RegularUserRole {
@@ -36,23 +36,8 @@ public class RegularUserServiceFacade extends UserService implements RegularUser
     }
 
     @Override
-    public List<VacationPackage> filterVacationPackagesByDestination(String destination) {
-        return vacationPackageManager.filterVacationPackagesByDestination(destination);
-    }
-
-    @Override
-    public List<VacationPackage> filterVacationPackagesByPeriod(LocalDate startDate, LocalDate endDate) {
-        return vacationPackageManager.filterVacationPackagesByPeriod(startDate, endDate);
-    }
-
-    @Override
-    public List<VacationPackage> filterVacationPackagesByPrice(Double minPrice, Double maxPrice) {
-        return vacationPackageManager.filterVacationPackagesByPrice(minPrice, maxPrice);
-    }
-
-    @Override
-    public List<VacationPackage> filterVacationPackagesByKeyword(String keyword) {
-        return vacationPackageManager.filterVacationPackagesByKeyword(keyword);
+    public List<VacationPackage> filterVacationPackagesByConditions(FilterConditions filterConditions) {
+        return vacationPackageManager.filterByConditions(filterConditions);
     }
 
     @Override

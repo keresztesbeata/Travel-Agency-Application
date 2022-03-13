@@ -2,10 +2,10 @@ package service.roles;
 
 import model.User;
 import model.VacationPackage;
+import repository.FilterConditions;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface RegularUserRole extends UserRole {
@@ -19,11 +19,5 @@ public interface RegularUserRole extends UserRole {
 
     VacationPackage findVacationPackageByName(String vacationPackageName);
 
-    List<VacationPackage> filterVacationPackagesByDestination(String destination);
-
-    List<VacationPackage> filterVacationPackagesByPeriod(LocalDate startDate, LocalDate endDate);
-
-    List<VacationPackage> filterVacationPackagesByPrice(Double minPrice, Double maxPrice);
-
-    List<VacationPackage> filterVacationPackagesByKeyword(String keyword);
+    List<VacationPackage> filterVacationPackagesByConditions(FilterConditions filterConditions);
 }
