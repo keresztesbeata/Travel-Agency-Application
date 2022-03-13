@@ -138,12 +138,12 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
 
     private Predicate addAfterStartDateCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, LocalDate startDate) {
         return criteriaBuilder.and(condition,
-                criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startDate));
+                criteriaBuilder.greaterThanOrEqualTo(root.get("from"), startDate));
     }
 
     private Predicate addBeforeEndDateCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, LocalDate endDate) {
         return criteriaBuilder.and(condition,
-                criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate));
+                criteriaBuilder.lessThanOrEqualTo(root.get("to"), endDate));
     }
 
     private Predicate addAvailabilityCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition) {

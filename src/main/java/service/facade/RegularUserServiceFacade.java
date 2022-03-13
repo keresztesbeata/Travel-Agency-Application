@@ -1,8 +1,9 @@
 package service.facade;
 
 import model.User;
-import model.VacationPackage;
 import repository.FilterConditions;
+import service.dto.VacationPackageConverter;
+import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import service.managers.UserManager;
@@ -16,27 +17,27 @@ public class RegularUserServiceFacade extends UserService implements RegularUser
     private VacationPackageManager vacationPackageManager = new VacationPackageManager();
 
     @Override
-    public void bookVacationPackage(VacationPackage vacationPackage) throws InvalidOperationException {
-        vacationPackageManager.bookVacationPackage(vacationPackage, getCurrentUser());
+    public void bookVacationPackage(VacationPackageDTO vacationPackageDTO) throws InvalidOperationException {
+        vacationPackageManager.bookVacationPackage(vacationPackageDTO, getCurrentUser());
     }
 
     @Override
-    public List<VacationPackage> findBookedVacationPackagesOfCurrentUser() {
+    public List<VacationPackageDTO> findBookedVacationPackagesOfCurrentUser() {
         return vacationPackageManager.findBookedVacationPackagesOfUser(getCurrentUser());
     }
 
     @Override
-    public List<VacationPackage> findAvailableVacationPackages() {
+    public List<VacationPackageDTO> findAvailableVacationPackages() {
         return vacationPackageManager.findAvailableVacationPackages(getCurrentUser());
     }
 
     @Override
-    public VacationPackage findVacationPackageByName(String vacationPackageName) {
-        return vacationPackageManager.findByName(vacationPackageName);
+    public VacationPackageDTO findVacationPackageByName(String vacationPackageName) {
+        return VacationPackageConverter.convertToDTO(vacationPackageManager.findByName(vacationPackageName));
     }
 
     @Override
-    public List<VacationPackage> filterVacationPackagesByConditions(FilterConditions filterConditions) {
+    public List<VacationPackageDTO> filterVacationPackagesByConditions(FilterConditions filterConditions) {
         return vacationPackageManager.filterByConditions(filterConditions);
     }
 

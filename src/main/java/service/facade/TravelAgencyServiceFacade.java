@@ -2,7 +2,7 @@ package service.facade;
 
 import model.PackageStatus;
 import model.VacationDestination;
-import model.VacationPackage;
+import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import service.managers.VacationDestinationManager;
@@ -10,6 +10,7 @@ import service.managers.VacationPackageManager;
 import service.roles.TravelAgencyRole;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TravelAgencyServiceFacade extends UserService implements TravelAgencyRole {
     private VacationDestinationManager vacationDestinationManager = new VacationDestinationManager();
@@ -27,23 +28,21 @@ public class TravelAgencyServiceFacade extends UserService implements TravelAgen
     }
 
     @Override
-    public List<VacationDestination> findAllDestinations() {
-        return vacationDestinationManager.findAll();
+    public List<String> findAllDestinations() {
+        return vacationDestinationManager.findAll()
+                .stream()
+                .map(VacationDestination::getName)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void addVacationPackageForDestination(VacationPackage vacationPackage, String vacationDestinationName) throws InvalidInputException {
-        VacationDestination vacationDestination = vacationDestinationManager.findByName(vacationDestinationName);
-        if (vacationDestination == null) {
-            throw new InvalidInputException("No vacation destination exists with the name: " + vacationDestinationName + "!");
-        }
-        vacationPackage.setVacationDestination(vacationDestination);
-        vacationPackageManager.add(vacationPackage);
+    public void addVacationPackage(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
+        vacationPackageManager.add(vacationPackageDTO);
     }
 
     @Override
-    public void editVacationPackage(VacationPackage vacationPackage) throws InvalidInputException {
-        vacationPackageManager.edit(vacationPackage);
+    public void editVacationPackage(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
+        vacationPackageManager.edit(vacationPackageDTO);
     }
 
     @Override
@@ -52,7 +51,7 @@ public class TravelAgencyServiceFacade extends UserService implements TravelAgen
     }
 
     @Override
-    public List<VacationPackage> filterVacationPackagesByStatus(List<PackageStatus> packageStatusList) {
+    public List<VacationPackageDTO> filterVacationPackagesByStatus(List<PackageStatus> packageStatusList) {
         return vacationPackageManager.filterByStatus(packageStatusList);
     }
 }

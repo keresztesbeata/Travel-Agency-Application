@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.UserType;
 import presentation.views.UIComponentsFactory;
+import service.dto.VacationPackageDTO;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ public class ViewLoaderFactory {
     private static final String MAIN_VIEW_URL = "/fxml/MainView.fxml";
     private static final String REGULAR_USER_VIEW_URL = "/fxml/RegularUserView.fxml";
     private static final String TRAVEL_AGENCY_VIEW_URL = "/fxml/TravelAgencyView.fxml";
+    private static final String ADD_PACKAGE_VIEW_URL = "/fxml/TravelAgencyView.fxml";
+    private static final String EDIT_PACKAGE_VIEW_URL = "/fxml/TravelAgencyView.fxml";
 
     private static HashMap<String,Object> viewToController = new HashMap<>();
 
@@ -46,6 +49,18 @@ public class ViewLoaderFactory {
 
     public void openTravelAgencyView() throws IOException {
         openView(TRAVEL_AGENCY_VIEW_URL,  "Home (Travel agency)").setOnCloseRequest(e -> Platform.exit());
+        TravelAgencyController travelAgencyController = (TravelAgencyController) getController(TRAVEL_AGENCY_VIEW_URL);
+        travelAgencyController.init();
+    }
+
+    public void openAddPackageView() throws IOException {
+        openView(MAIN_VIEW_URL,  "Add package");
+    }
+
+    public void openEditPackageView(VacationPackageDTO vacationPackageDTO) throws IOException {
+        openView(MAIN_VIEW_URL,  "Edit package");
+        EditPackageController editPackageController = (EditPackageController) getController(EDIT_PACKAGE_VIEW_URL);
+        editPackageController.init(vacationPackageDTO);
     }
 
     private Stage openView(String url, String title) throws IOException {

@@ -1,5 +1,6 @@
 package model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +14,7 @@ import java.util.Set;
 @Table(name = "vacation_package")
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
 public class VacationPackage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,10 +31,10 @@ public class VacationPackage {
     private Double price;
 
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate from;
 
     @Column(nullable = false)
-    private LocalDate endDate;
+    private LocalDate to;
 
     @Column(nullable = false)
     private Integer maxNrOfBookings;
@@ -51,15 +52,21 @@ public class VacationPackage {
     @ManyToMany(mappedBy = "vacationPackages")
     private Set<User> users = new HashSet<>();
 
-    private VacationPackage(String name, Double price, LocalDate startDate, LocalDate endDate, Integer maxNrOfBookings, String details, VacationDestination vacationDestination) {
+    public VacationPackage(String name, Double price, LocalDate from, LocalDate to, Integer maxNrOfBookings, String details, VacationDestination vacationDestination) {
         this.name = name;
         this.price = price;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.from = from;
+        this.to = to;
         this.maxNrOfBookings = maxNrOfBookings;
         this.nrOfBookings = 0;
         this.details = details;
         this.vacationDestination = vacationDestination;
+        this.packageStatus = PackageStatus.NOT_BOOKED;
+    }
+
+    public VacationPackage() {
+        this.maxNrOfBookings = 0;
+        this.nrOfBookings = 0;
         this.packageStatus = PackageStatus.NOT_BOOKED;
     }
 
@@ -71,51 +78,6 @@ public class VacationPackage {
         users.add(user);
     }
 
-    public static class VacationPackageBuilder {
-        private VacationDestination vacationDestination;
-        private String name;
-        private Double price;
-        private LocalDate startDate;
-        private LocalDate endDate;
-        private Integer maxCapacity;
-        private String details;
-
-        public VacationPackageBuilder withMaxCapacity(Integer maxCapacity) {
-            this.maxCapacity = maxCapacity;
-            return this;
-        }
-
-        public VacationPackageBuilder withDestination(VacationDestination vacationDestination) {
-            this.vacationDestination = vacationDestination;
-            return this;
-        }
-
-        public VacationPackageBuilder withName(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public VacationPackageBuilder withPrice(Double price) {
-            this.price = price;
-            return this;
-        }
-
-        public VacationPackageBuilder withPeriod(LocalDate startDate, LocalDate endDate) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-            return this;
-        }
-
-        public VacationPackageBuilder withDetails(String details) {
-            this.details = details;
-            return this;
-        }
-
-        public VacationPackage build() {
-            return new VacationPackage(name, price, startDate, endDate, maxCapacity, details, vacationDestination);
-        }
-    }
-
     @Override
     public String toString() {
         return "VacationPackage{" +
@@ -123,8 +85,8 @@ public class VacationPackage {
                 ", vacationDestination=" + vacationDestination +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
+                ", from=" + from +
+                ", to=" + to +
                 ", maxNrOfBookings=" + maxNrOfBookings +
                 ", nrOfBookings=" + nrOfBookings +
                 ", details='" + details + '\'' +

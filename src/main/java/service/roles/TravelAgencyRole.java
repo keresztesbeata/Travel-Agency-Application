@@ -1,9 +1,9 @@
 package service.roles;
 
+import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import model.PackageStatus;
 import model.VacationDestination;
-import model.VacationPackage;
 import service.exceptions.InvalidOperationException;
 
 import java.util.List;
@@ -14,14 +14,14 @@ public interface TravelAgencyRole extends UserRole{
 
     void deleteVacationDestination(String destinationName) throws InvalidOperationException;
 
-    List<VacationDestination> findAllDestinations();
+    List<String> findAllDestinations();
 
-    void addVacationPackageForDestination(VacationPackage vacationPackage, String vacationDestinationName) throws InvalidInputException;
+    void addVacationPackage(VacationPackageDTO vacationPackageDTO) throws InvalidInputException;
 
-    void editVacationPackage(VacationPackage vacationPackage) throws InvalidInputException;
+    void editVacationPackage(VacationPackageDTO vacationPackageDTO) throws InvalidInputException;
 
     void deleteVacationPackage(String vacationPackageName) throws InvalidOperationException;
 
-    List<VacationPackage> filterVacationPackagesByStatus(List<PackageStatus> packageStatusList);
+    List<VacationPackageDTO> filterVacationPackagesByStatus(List<PackageStatus> packageStatusList);
 
 }

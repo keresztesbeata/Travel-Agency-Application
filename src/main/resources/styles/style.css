@@ -37,7 +37,7 @@
 }
 
 .table-view .column-header, .table-view .filler {
-    -fx-size: 35;
+    -fx-size: 15;
     -fx-border-width: 0 0 1 0;
     -fx-background-color: transparent;
     -fx-border-color:
@@ -49,10 +49,10 @@
 }
 
 .table-view .column-header .label {
-    -fx-font-size: 20pt;
+    -fx-font-size: 15pt;
+    -fx-alignment: center;
     -fx-font-family: "Segoe UI Light";
     -fx-text-fill: white;
-    -fx-alignment: center-left;
     -fx-opacity: 1;
 }
 
@@ -89,10 +89,24 @@
 }
 
 .text-field {
-    -fx-font-size: 12pt;
+    -fx-font-size: 10pt;
     -fx-font-family: "Segoe UI Semibold";
 }
 
+.text-field:focused {
+    -fx-border-color: #e31b57;
+}
+.text-area:focused {
+    -fx-border-color: #e31b57;
+}
+
+.combo-box:focused {
+    -fx-border-color: #e31b57;
+}
+
+.check-box {
+    -fx-text-fill: #bbb6b6;
+}
 /*
  * Metro style Push Button
  * Author: Pedro Duque Vieira
@@ -115,7 +129,7 @@
 }
 
 .button:pressed, .button:default:hover:pressed {
-    -fx-background-color: white;
+    -fx-background-color: #f6f3f4;
     -fx-text-fill: #1d1d1d;
 }
 

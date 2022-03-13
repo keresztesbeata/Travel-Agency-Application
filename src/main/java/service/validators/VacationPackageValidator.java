@@ -1,18 +1,18 @@
 package service.validators;
 
-import model.VacationPackage;
+import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 
 import java.time.LocalDate;
 
-public class VacationPackageValidator implements InputValidator<VacationPackage> {
+public class VacationPackageValidator implements InputValidator<VacationPackageDTO> {
 
     @Override
-    public void validate(VacationPackage vacationPackage) throws InvalidInputException {
-        validatePackageName(vacationPackage.getName());
-        validatePeriod(vacationPackage.getStartDate(), vacationPackage.getEndDate());
-        validatePrice(vacationPackage.getPrice());
-        validateNrOfPeople(vacationPackage.getMaxNrOfBookings());
+    public void validate(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
+        validatePackageName(vacationPackageDTO.getName());
+        validatePeriod(vacationPackageDTO.getFrom(), vacationPackageDTO.getTo());
+        validatePrice(vacationPackageDTO.getPrice());
+        validateNrOfPeople(vacationPackageDTO.getMaxNrOfBookings());
     }
 
     private void validatePeriod(LocalDate startDate, LocalDate endDate) throws InvalidInputException {

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.geometry.Insets?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="presentation.controller.EditPackageController"
+            prefHeight="400.0" prefWidth="600.0"
+            styleClass="background" stylesheets="/styles/style.css">
+    <children>
+        <VBox fillWidth="false" prefHeight="570.0" prefWidth="850.0" spacing="20.0">
+            <children>
+                <Label fx:id="errorLabel" alignment="center" style="-fx-alignment: center; -fx-text-fill: #b01717" />
+                <HBox spacing="10.0">
+                    <Label text="Name:" />
+                    <ComboBox fx:id="nameComboBox" editable="true" promptText="Select name..." />
+                </HBox>
+                <HBox spacing="10.0">
+                    <Label text="Details:" />
+                    <TextArea fx:id="detailsField" promptText="Details..." />
+                </HBox>
+                <HBox spacing="10.0">
+                    <Label text="Destination:" />
+                    <ComboBox fx:id="destinationComboBox">
+                    </ComboBox>
+                </HBox>
+                <HBox spacing="10.0">
+                    <Label text="From:" />
+                    <DatePicker fx:id="fromDatePicker" promptText="From..." />
+                    <Label text="To:" />
+                    <DatePicker fx:id="toDatePicker" promptText="To..." />
+                </HBox>
+                <HBox spacing="10.0">
+                    <Label text="Price:" />
+                    <TextField fx:id="priceField" promptText="Price.." />
+                </HBox>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#onUpdatePackage" text="Update" />
+            </children>
+            <padding>
+                <Insets left="50.0" />
+            </padding>
+        </VBox>
+    </children>
+</AnchorPane>

@@ -3,6 +3,7 @@ package service.roles;
 import model.User;
 import model.VacationPackage;
 import repository.FilterConditions;
+import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 
@@ -11,13 +12,13 @@ import java.util.List;
 public interface RegularUserRole extends UserRole {
     void register(User user) throws InvalidInputException;
 
-    void bookVacationPackage(VacationPackage vacationPackage) throws InvalidOperationException;
+    void bookVacationPackage(VacationPackageDTO vacationPackage) throws InvalidOperationException;
 
-    List<VacationPackage> findBookedVacationPackagesOfCurrentUser();
+    List<VacationPackageDTO> findBookedVacationPackagesOfCurrentUser();
 
-    List<VacationPackage> findAvailableVacationPackages();
+    List<VacationPackageDTO> findAvailableVacationPackages();
 
-    VacationPackage findVacationPackageByName(String vacationPackageName);
+    VacationPackageDTO findVacationPackageByName(String vacationPackageName);
 
-    List<VacationPackage> filterVacationPackagesByConditions(FilterConditions filterConditions);
+    List<VacationPackageDTO> filterVacationPackagesByConditions(FilterConditions filterConditions);
 }
