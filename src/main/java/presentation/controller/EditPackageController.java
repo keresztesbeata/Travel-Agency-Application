@@ -14,7 +14,6 @@ public class EditPackageController {
     public TextArea detailsField;
     public DatePicker fromDatePicker;
     public DatePicker toDatePicker;
-    public TextField maxNrBookingsField;
     public TextField priceField;
 
     private TravelAgencyRole userRole = new TravelAgencyServiceFacade();
@@ -34,7 +33,6 @@ public class EditPackageController {
             vacationPackageDTO.setDetails(detailsField.getText());
             vacationPackageDTO.setVacationDestinationName(destinationComboBox.getSelectionModel().getSelectedItem());
             vacationPackageDTO.setPrice(Double.parseDouble(priceField.getText()));
-            vacationPackageDTO.setMaxNrOfBookings(Integer.parseInt(maxNrBookingsField.getText()));
             vacationPackageDTO.setFrom(fromDatePicker.getValue());
             vacationPackageDTO.setTo(toDatePicker.getValue());
             userRole.editVacationPackage(vacationPackageDTO);
@@ -53,9 +51,7 @@ public class EditPackageController {
         detailsField.setText(originalVacationPackageDTO.getDetails());
         fromDatePicker.setValue(originalVacationPackageDTO.getFrom());
         toDatePicker.setValue(originalVacationPackageDTO.getTo());
-        maxNrBookingsField.setText(originalVacationPackageDTO.getMaxNrOfBookings().toString());
         priceField.setText(originalVacationPackageDTO.getPrice().toString());
-        System.out.println(originalVacationPackageDTO);
     }
 
     private void closeView() {

@@ -28,7 +28,6 @@ public class TravelAgencyPackagesController {
     public CheckBox bookedChoiceBox;
 
     private TableManager tableManager;
-
     private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
     private TravelAgencyRole userRole = new TravelAgencyServiceFacade();
 

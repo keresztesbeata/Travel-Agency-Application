@@ -41,7 +41,9 @@ public class TableManager {
             columns[3].setCellValueFactory(new PropertyValueFactory<>("price"));
             columns[4].setCellValueFactory(new PropertyValueFactory<>("from"));
             columns[5].setCellValueFactory(new PropertyValueFactory<>("to"));
-            columns[6].setCellValueFactory(new PropertyValueFactory<>("maxNrOfBookings"));
+            if(table.getColumns().size() > 6) {
+                columns[6].setCellValueFactory(new PropertyValueFactory<>("packageStatus"));
+            }
         }
 
 }

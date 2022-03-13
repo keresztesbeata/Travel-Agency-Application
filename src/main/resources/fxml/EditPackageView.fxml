@@ -46,10 +46,6 @@
                     <Label text="Price:" />
                     <TextField fx:id="priceField" />
                 </HBox>
-                <HBox spacing="10.0">
-                    <Label text="Max nr of bookings:" />
-                    <TextField fx:id="maxNrBookingsField" editable="false" />
-                </HBox>
                 <Button alignment="CENTER" mnemonicParsing="false" onAction="#onUpdatePackage" text="Update" />
             </children>
             <padding>

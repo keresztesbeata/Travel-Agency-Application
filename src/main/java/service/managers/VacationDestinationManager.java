@@ -1,5 +1,7 @@
 package service.managers;
 
+import repository.FilterConditions;
+import repository.VacationPackageRepository;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import model.VacationDestination;
@@ -9,6 +11,7 @@ import java.util.List;
 
 public class VacationDestinationManager {
     private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
+    private static VacationPackageRepository vacationPackageRepository = VacationPackageRepository.getInstance();
 
     public VacationDestination findByName(String name) {
         if (name != null) {
@@ -38,6 +41,10 @@ public class VacationDestinationManager {
         if (vacationDestination == null) {
             throw new InvalidOperationException("The vacation destination: " + name + " cannot be deleted, because it doesn't exist!");
         }
+        FilterConditions filterConditions = new FilterConditions.FilterConditionsBuilder().withDestinationName(name).build();
+        vacationPackageRepository.filterByConditions(filterConditions)
+                        .forEach(vacationPackage ->
+                                vacationPackageRepository.delete(vacationPackage.getId()));
         vacationDestinationRepository.delete(vacationDestination.getId());
     }
 }

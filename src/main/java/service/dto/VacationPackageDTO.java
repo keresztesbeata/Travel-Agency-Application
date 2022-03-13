@@ -16,5 +16,6 @@ public class VacationPackageDTO {
     private LocalDate from;
     private LocalDate to;
     private String details;
+    private String packageStatus;
     private Integer maxNrOfBookings;
 }

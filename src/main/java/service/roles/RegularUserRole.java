@@ -21,4 +21,6 @@ public interface RegularUserRole extends UserRole {
     VacationPackageDTO findVacationPackageByName(String vacationPackageName);
 
     List<VacationPackageDTO> filterVacationPackagesByConditions(FilterConditions filterConditions);
+
+    List<String> findAllDestinations();
 }

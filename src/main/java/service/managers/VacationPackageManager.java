@@ -59,6 +59,7 @@ public class VacationPackageManager {
         VacationPackage vacationPackage = validateAndConvertVacationPackageDTO(vacationPackageDTO);
         vacationPackage.setId(existingVacationPackage.getId());
         vacationPackage.setNrOfBookings(existingVacationPackage.getNrOfBookings());
+        vacationPackage.setMaxNrOfBookings(existingVacationPackage.getMaxNrOfBookings());
         vacationPackage.setPackageStatus(existingVacationPackage.getPackageStatus());
         vacationPackageRepository.update(vacationPackage);
     }

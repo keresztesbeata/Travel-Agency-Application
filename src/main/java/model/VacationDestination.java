@@ -21,7 +21,7 @@ public class VacationDestination {
     @Column(unique = true, nullable = false, length = 100)
     private String name;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "vacationDestination")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "vacationDestination")
     private Set<VacationPackage> vacationPackages = new HashSet<>();
 
     public VacationDestination(String name) {

@@ -43,6 +43,8 @@ public class ViewLoaderFactory {
 
     public void openRegularUserView() throws IOException {
         openView(REGULAR_USER_VIEW_URL, "Home (Regular User)").setOnCloseRequest(e -> Platform.exit());
+        RegularUserController regularUserController = (RegularUserController) getController(REGULAR_USER_VIEW_URL);
+        regularUserController.init();
     }
 
     public void openTravelAgencyPackagesView() throws IOException {

@@ -8,6 +8,7 @@ import java.util.List;
 public class VacationDestinationRepository extends EntityRepository<VacationDestination, Long> {
     private static VacationDestinationRepository instance;
     private static final String SQL_QUERY_FIND_DESTINATION_BY_NAME = "select destination from VacationDestination destination left join fetch destination.vacationPackages where destination.name = ?1";
+    private static final String SQL_DELETE_BY_ID = "delete from vacation_destination where id = :id";
 
     private VacationDestinationRepository() {
         super(VacationDestination.class);
@@ -32,6 +33,17 @@ public class VacationDestinationRepository extends EntityRepository<VacationDest
             vacationDestination = destinations.get(0);
         }
         return vacationDestination;
+    }
+
+    @Override
+    public void delete(Long id) {
+        EntityManager entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery(SQL_DELETE_BY_ID)
+                .setParameter("id", id)
+                .executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
     }
 
 }
