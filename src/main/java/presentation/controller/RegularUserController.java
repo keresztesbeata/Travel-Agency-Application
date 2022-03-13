@@ -1,6 +1,7 @@
 package presentation.controller;
 
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import presentation.views.TableManager;
 import presentation.views.UIComponentsFactory;
@@ -19,6 +20,9 @@ public class RegularUserController {
     public TextField maxPriceField;
     public TextField minPriceField;
     public ComboBox<String> destinationComboBox;
+    public Button applyFiltersButton;
+    public Button clearFiltersButton;
+    public VBox createBookingBox;
 
     private RegularUserRole userRole = new RegularUserServiceFacade();
     private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
@@ -54,10 +58,16 @@ public class RegularUserController {
     }
 
     public void onShowAvailablePackages() {
+        createBookingBox.setVisible(true);
+        applyFiltersButton.setDisable(false);
+        clearFiltersButton.setDisable(false);
         reload();
     }
 
     public void onShowBookingsOfUser() {
+        createBookingBox.setVisible(false);
+        applyFiltersButton.setDisable(true);
+        clearFiltersButton.setDisable(true);
         tableManager.updateTable(userRole.findBookedVacationPackagesOfCurrentUser());
     }
 
@@ -68,6 +78,7 @@ public class RegularUserController {
 
     public void onApplyFilters() {
         FilterConditions.FilterConditionsBuilder builder = new FilterConditions.FilterConditionsBuilder();
+        builder = builder.withAvailability(true);
         String destinationName = destinationComboBox.getSelectionModel().getSelectedItem();
         if (destinationName != null && !destinationName.isEmpty()) {
             builder = builder.withDestinationName(destinationName);

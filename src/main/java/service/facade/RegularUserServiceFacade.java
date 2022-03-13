@@ -43,7 +43,12 @@ public class RegularUserServiceFacade extends UserService implements RegularUser
 
     @Override
     public List<VacationPackageDTO> filterVacationPackagesByConditions(FilterConditions filterConditions) {
-        return vacationPackageManager.filterByConditions(filterConditions);
+        List<String> bookedPackageNames = findBookedVacationPackagesOfCurrentUser()
+                .stream().map(VacationPackageDTO::getName)
+                .collect(Collectors.toList());
+        List<VacationPackageDTO> filteredPackages = vacationPackageManager.filterByConditions(filterConditions);
+        filteredPackages.removeIf(vacationPackageDTO -> bookedPackageNames.contains(vacationPackageDTO.getName()));
+        return filteredPackages;
     }
 
     @Override

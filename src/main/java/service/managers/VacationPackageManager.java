@@ -16,7 +16,6 @@ import service.exceptions.PackageBookedException;
 import service.validators.InputValidator;
 import service.validators.VacationPackageValidator;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -96,13 +95,6 @@ public class VacationPackageManager {
         }
     }
 
-    public List<VacationPackageDTO> findAll() {
-        return vacationPackageRepository.findAll()
-                .stream()
-                .map(VacationPackageConverter::convertToDTO)
-                .collect(Collectors.toList());
-    }
-
     public VacationPackage findByName(String name) {
         return vacationPackageRepository.findByName(name);
     }
@@ -152,7 +144,8 @@ public class VacationPackageManager {
     }
 
     public List<VacationPackageDTO> findAvailableVacationPackages(User user) {
-        return vacationPackageRepository.filterByStatus(Arrays.asList(PackageStatus.NOT_BOOKED, PackageStatus.IN_PROGRESS))
+        FilterConditions filterConditions = new FilterConditions.FilterConditionsBuilder().withAvailability(true).build();
+        return vacationPackageRepository.filterByConditions(filterConditions)
                 .stream()
                 .filter(vacationPackage -> vacationPackage.getUsers()
                         .stream()
