@@ -2,7 +2,6 @@ package model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -20,7 +19,7 @@ public class VacationPackage {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "vacationDestinationId", nullable = false)
     private VacationDestination vacationDestination;
 
@@ -31,10 +30,10 @@ public class VacationPackage {
     private Double price;
 
     @Column(nullable = false)
-    private LocalDate from;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDate to;
+    private LocalDate endDate;
 
     @Column(nullable = false)
     private Integer maxNrOfBookings;
@@ -52,11 +51,11 @@ public class VacationPackage {
     @ManyToMany(mappedBy = "vacationPackages")
     private Set<User> users = new HashSet<>();
 
-    public VacationPackage(String name, Double price, LocalDate from, LocalDate to, Integer maxNrOfBookings, String details, VacationDestination vacationDestination) {
+    public VacationPackage(String name, Double price, LocalDate startDate, LocalDate endDate, Integer maxNrOfBookings, String details, VacationDestination vacationDestination) {
         this.name = name;
         this.price = price;
-        this.from = from;
-        this.to = to;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.maxNrOfBookings = maxNrOfBookings;
         this.nrOfBookings = 0;
         this.details = details;
@@ -85,8 +84,8 @@ public class VacationPackage {
                 ", vacationDestination=" + vacationDestination +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", from=" + from +
-                ", to=" + to +
+                ", from=" + startDate +
+                ", to=" + endDate +
                 ", maxNrOfBookings=" + maxNrOfBookings +
                 ", nrOfBookings=" + nrOfBookings +
                 ", details='" + details + '\'' +

@@ -11,7 +11,7 @@ public class UserManager {
     private InputValidator<User> userValidator = new UserValidator();
     private static Long userId;
 
-    public void login(User user) throws InvalidInputException {
+    public User login(User user) throws InvalidInputException {
         if (user.getUsername() == null || user.getPassword() == null) {
             throw new InvalidInputException("The username and password should not be empty!");
         }
@@ -23,6 +23,7 @@ public class UserManager {
             throw new InvalidInputException("Invalid password!");
         }
         userId = existingUser.getId();
+        return existingUser;
     }
 
     public void register(User user) throws InvalidInputException {

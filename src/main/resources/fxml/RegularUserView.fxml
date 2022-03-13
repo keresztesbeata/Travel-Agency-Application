@@ -18,9 +18,13 @@
          <children>
             <MenuBar nodeOrientation="LEFT_TO_RIGHT">
               <menus>
-                  <Menu mnemonicParsing="false" text="Available packages" onAction="#onShowAvailablePackages"/>
-                  <Menu mnemonicParsing="false" text="My Bookings" onAction="#onShowBookingsOfUser"/>
-                  <Menu mnemonicParsing="false" onAction="#onLogOut" text="Log out" />
+                  <Menu mnemonicParsing="false" text="Menu">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#onShowAvailablePackages" text="Available packages" />
+                        <MenuItem mnemonicParsing="false" onAction="#onCreateBooking" text="My bookings" />
+                        <MenuItem mnemonicParsing="false" onAction="#onLogOut" text="Log out" />
+                    </items>
+                  </Menu>
               </menus>
             </MenuBar>
             <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS">

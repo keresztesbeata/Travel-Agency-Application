@@ -5,12 +5,12 @@ import service.exceptions.InvalidInputException;
 import service.managers.UserManager;
 import service.roles.UserRole;
 
-public abstract class UserService implements UserRole {
+public class UserService implements UserRole {
     private UserManager userManager = new UserManager();
 
     @Override
-    public void login(User user) throws InvalidInputException {
-        userManager.login(user);
+    public User login(User user) throws InvalidInputException {
+        return userManager.login(user);
     }
 
     @Override

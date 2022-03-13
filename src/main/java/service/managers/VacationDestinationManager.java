@@ -21,14 +21,15 @@ public class VacationDestinationManager {
         return vacationDestinationRepository.findAll();
     }
 
-    public void add(VacationDestination vacationDestination) throws InvalidInputException {
-        String name = vacationDestination.getName();
-        if (name == null) {
+    public void add(String vacationDestinationName) throws InvalidInputException {
+        if (vacationDestinationName == null) {
             throw new InvalidInputException("The name of the destination should not be empty!");
         }
-        if (vacationDestinationRepository.findByName(name) != null) {
-            throw new InvalidInputException("The vacation destination: " + name + " has already been added!");
+        if (vacationDestinationRepository.findByName(vacationDestinationName) != null) {
+            throw new InvalidInputException("The vacation destination: " + vacationDestinationName + " has already been added!");
         }
+        VacationDestination vacationDestination = new VacationDestination();
+        vacationDestination.setName(vacationDestinationName);
         vacationDestinationRepository.save(vacationDestination);
     }
 

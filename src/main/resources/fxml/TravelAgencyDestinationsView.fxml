@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="500.0" prefWidth="800.0" styleClass="background" stylesheets="/styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.controller.TravelAgencyDestinationsController">
+<children>
+    <VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <children>
+            <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="31.0" prefWidth="850.0">
+                <menus>
+                    <Menu mnemonicParsing="false" text="Menu">
+                        <items>
+                            <MenuItem mnemonicParsing="false" onAction="#onViewPackages" text="View packages" />
+                            <MenuItem mnemonicParsing="false" onAction="#onReload" text="View destinations" />
+                            <MenuItem mnemonicParsing="false" onAction="#onLogOut" text="Log out" />
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+            <VBox alignment="CENTER">
+                <HBox alignment="CENTER" prefHeight="36.0" prefWidth="850.0" spacing="30.0">
+                    <Label text="New destination:" />
+                    <TextField fx:id="destinationNameField" promptText="Enter destination name..." />
+                    <Button fx:id="searchDestinationButton" mnemonicParsing="false" onAction="#onSearchDestination" text="Search destination" />
+                    <Button fx:id="addDestinationButton" mnemonicParsing="false" onAction="#onAddNewDestination" text="Add destination" />
+                    <padding>
+                        <Insets bottom="10.0" top="10.0" />
+                    </padding>
+                </HBox>
+                <Button fx:id="reloadButton" mnemonicParsing="false" onAction="#onReload" text="Reload" />
+                <padding>
+                    <Insets bottom="10.0" top="10.0" />
+                </padding>
+            </VBox>
+            <VBox alignment="CENTER">
+                <ListView fx:id="vacationDestinationsList" prefHeight="200.0" prefWidth="200.0" />
+                 <Button fx:id="deleteDestinationButton" mnemonicParsing="false" onAction="#onDeleteDestination" text="Delete the selected destination" />
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
+            </VBox>
+        </children>
+    </VBox>
+</children>
+</AnchorPane>

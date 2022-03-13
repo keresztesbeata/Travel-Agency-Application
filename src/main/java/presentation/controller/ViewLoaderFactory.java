@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.UserType;
 import presentation.views.UIComponentsFactory;
 import service.dto.VacationPackageDTO;
 
@@ -17,48 +16,61 @@ public class ViewLoaderFactory {
     private static final String REGISTER_VIEW_URL = "/fxml/RegisterView.fxml";
     private static final String MAIN_VIEW_URL = "/fxml/MainView.fxml";
     private static final String REGULAR_USER_VIEW_URL = "/fxml/RegularUserView.fxml";
-    private static final String TRAVEL_AGENCY_VIEW_URL = "/fxml/TravelAgencyView.fxml";
-    private static final String ADD_PACKAGE_VIEW_URL = "/fxml/TravelAgencyView.fxml";
-    private static final String EDIT_PACKAGE_VIEW_URL = "/fxml/TravelAgencyView.fxml";
+    private static final String TRAVEL_AGENCY_PACKAGES_VIEW_URL = "/fxml/TravelAgencyPackagesView.fxml";
+    private static final String ADD_PACKAGE_VIEW_URL = "/fxml/AddPackageView.fxml";
+    private static final String EDIT_PACKAGE_VIEW_URL = "/fxml/EditPackageView.fxml";
+    private static final String TRAVEL_AGENCY_DESTINATIONS_VIEW_URL = "/fxml/TravelAgencyDestinationsView.fxml";
 
-    private static HashMap<String,Object> viewToController = new HashMap<>();
+    private static HashMap<String, Object> viewToController = new HashMap<>();
 
-    public void openLoginView(UserType userType) throws IOException{
+    public void openLoginView() throws IOException {
         openView(LOGIN_VIEW_URL, "Login");
-        LoginController controller = (LoginController) viewToController.get(LOGIN_VIEW_URL);
-        controller.init(userType);
     }
 
     public void openRegisterView() throws IOException {
         openView(REGISTER_VIEW_URL, "Register").setOnCloseRequest(e -> {
             try {
-                openLoginView(UserType.REGULAR_USER);
+                openLoginView();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        });;
+        });
     }
 
     public void openMainView() throws IOException {
-        openView(MAIN_VIEW_URL,  "Main").setOnCloseRequest(e -> Platform.exit());
+        openView(MAIN_VIEW_URL, "Main").setOnCloseRequest(e -> Platform.exit());
     }
 
     public void openRegularUserView() throws IOException {
-        openView(REGULAR_USER_VIEW_URL,  "Home (Regular User)").setOnCloseRequest(e -> Platform.exit());
+        openView(REGULAR_USER_VIEW_URL, "Home (Regular User)").setOnCloseRequest(e -> Platform.exit());
     }
 
-    public void openTravelAgencyView() throws IOException {
-        openView(TRAVEL_AGENCY_VIEW_URL,  "Home (Travel agency)").setOnCloseRequest(e -> Platform.exit());
-        TravelAgencyController travelAgencyController = (TravelAgencyController) getController(TRAVEL_AGENCY_VIEW_URL);
-        travelAgencyController.init();
+    public void openTravelAgencyPackagesView() throws IOException {
+        openView(TRAVEL_AGENCY_PACKAGES_VIEW_URL, "Home (Travel agency)").setOnCloseRequest(e -> Platform.exit());
+        TravelAgencyPackagesController travelAgencyPackagesController = (TravelAgencyPackagesController) getController(TRAVEL_AGENCY_PACKAGES_VIEW_URL);
+        travelAgencyPackagesController.init();
     }
 
     public void openAddPackageView() throws IOException {
-        openView(MAIN_VIEW_URL,  "Add package");
+        openView(ADD_PACKAGE_VIEW_URL, "Add package");
+        AddPackageController addPackageController = (AddPackageController) getController(ADD_PACKAGE_VIEW_URL);
+        addPackageController.init();
+    }
+
+    public void openTravelAgencyDestinationsView() throws IOException {
+        openView(TRAVEL_AGENCY_DESTINATIONS_VIEW_URL, "Vacation destinations").setOnCloseRequest(e -> {
+            try {
+                openTravelAgencyPackagesView();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        });
+        TravelAgencyDestinationsController travelAgencyDestinationsController = (TravelAgencyDestinationsController) getController(TRAVEL_AGENCY_DESTINATIONS_VIEW_URL);
+        travelAgencyDestinationsController.init();
     }
 
     public void openEditPackageView(VacationPackageDTO vacationPackageDTO) throws IOException {
-        openView(MAIN_VIEW_URL,  "Edit package");
+        openView(EDIT_PACKAGE_VIEW_URL, "Edit package");
         EditPackageController editPackageController = (EditPackageController) getController(EDIT_PACKAGE_VIEW_URL);
         editPackageController.init(vacationPackageDTO);
     }
@@ -76,7 +88,7 @@ public class ViewLoaderFactory {
         return stage;
     }
 
-    public Object getController(String url) {
+    private Object getController(String url) {
         return viewToController.get(url);
     }
 }

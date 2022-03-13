@@ -7,8 +7,6 @@ import service.exceptions.InvalidInputException;
 import service.facade.TravelAgencyServiceFacade;
 import service.roles.TravelAgencyRole;
 
-import java.io.IOException;
-
 public class EditPackageController {
     public Label errorLabel;
     public TextField nameField;
@@ -19,7 +17,6 @@ public class EditPackageController {
     public TextField maxNrBookingsField;
     public TextField priceField;
 
-    private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
     private TravelAgencyRole userRole = new TravelAgencyServiceFacade();
 
     private VacationPackageDTO originalVacationPackageDTO;
@@ -58,6 +55,7 @@ public class EditPackageController {
         toDatePicker.setValue(originalVacationPackageDTO.getTo());
         maxNrBookingsField.setText(originalVacationPackageDTO.getMaxNrOfBookings().toString());
         priceField.setText(originalVacationPackageDTO.getPrice().toString());
+        System.out.println(originalVacationPackageDTO);
     }
 
     private void closeView() {

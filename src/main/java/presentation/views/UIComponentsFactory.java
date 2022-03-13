@@ -19,6 +19,19 @@ public class UIComponentsFactory {
         alert.setWidth(250);
         return alert;
     }
+    public static Alert getConfirmDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getDialogPane().getStylesheets().add("/styles/dialogStyle.css");
+        alert.getDialogPane().getStyleClass().add("dialog-pane");
+        alert.getDialogPane().setHeader(new Label("Confirm?"));
+        alert.getDialogPane().getHeader().getStyleClass().add("header");
+        alert.setTitle(title);
+        Text messageText = new Text(message);
+        messageText.setWrappingWidth(250);
+        alert.getDialogPane().setContent(messageText);
+        alert.setWidth(250);
+        return alert;
+    }
 
 
 }

@@ -2,12 +2,14 @@ package presentation.views;
 
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lombok.Getter;
 import service.dto.VacationPackageDTO;
 
 import java.util.List;
 
 public class TableManager {
 
+        @Getter
         private TableView<VacationPackageDTO> table;
 
         public TableManager(TableView<VacationPackageDTO> table) {
@@ -34,7 +36,7 @@ public class TableManager {
         private void initColumns() {
             TableColumn<List<String>,String>[] columns = table.getColumns().toArray(new TableColumn[0]);
             columns[0].setCellValueFactory(new PropertyValueFactory<>("name"));
-            columns[1].setCellValueFactory(new PropertyValueFactory<>("destination"));
+            columns[1].setCellValueFactory(new PropertyValueFactory<>("vacationDestinationName"));
             columns[2].setCellValueFactory(new PropertyValueFactory<>("details"));
             columns[3].setCellValueFactory(new PropertyValueFactory<>("price"));
             columns[4].setCellValueFactory(new PropertyValueFactory<>("from"));

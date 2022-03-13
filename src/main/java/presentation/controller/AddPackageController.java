@@ -7,6 +7,8 @@ import service.exceptions.InvalidInputException;
 import service.facade.TravelAgencyServiceFacade;
 import service.roles.TravelAgencyRole;
 
+import java.time.LocalDate;
+
 public class AddPackageController {
     public Label errorLabel;
     public TextField nameField;
@@ -17,8 +19,12 @@ public class AddPackageController {
     public TextField maxNrBookingsField;
     public TextField priceField;
 
-    private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
     private TravelAgencyRole userRole = new TravelAgencyServiceFacade();
+
+    public void init() {
+        errorLabel.setText("");
+        destinationComboBox.getItems().addAll(userRole.findAllDestinations());
+    }
 
     public void onAddPackage() {
         try{
@@ -26,22 +32,46 @@ public class AddPackageController {
             vacationPackageDTO.setName(nameField.getText());
             vacationPackageDTO.setDetails(detailsField.getText());
             vacationPackageDTO.setVacationDestinationName(destinationComboBox.getSelectionModel().getSelectedItem());
-            vacationPackageDTO.setPrice(Double.parseDouble(priceField.getText()));
-            vacationPackageDTO.setMaxNrOfBookings(Integer.parseInt(maxNrBookingsField.getText()));
-            vacationPackageDTO.setFrom(fromDatePicker.getValue());
-            vacationPackageDTO.setTo(toDatePicker.getValue());
+            if(priceField.getText() != null && !priceField.getText().isEmpty()) {
+                try{
+                    Double price = Double.parseDouble(priceField.getText());
+                    vacationPackageDTO.setPrice(price);
+                }catch(NumberFormatException e) {
+                    errorLabel.setText("Invalid number for price!");
+                    clearFields();
+                }
+            }
+            if(maxNrBookingsField.getText() != null && !maxNrBookingsField.getText().isEmpty()) {
+                try{
+                    Integer maxNrOfBookings = Integer.parseInt(maxNrBookingsField.getText());
+                    vacationPackageDTO.setMaxNrOfBookings(maxNrOfBookings);
+                }catch(NumberFormatException e) {
+                    errorLabel.setText("Invalid number for max nr of bookings!");
+                    clearFields();
+                }
+            }
+            if(fromDatePicker.getValue() != null) {
+                vacationPackageDTO.setFrom(fromDatePicker.getValue());
+            }
+            if(toDatePicker.getValue() != null) {
+                vacationPackageDTO.setTo(toDatePicker.getValue());
+            }
             userRole.addVacationPackage(vacationPackageDTO);
             closeView();
         } catch (InvalidInputException e) {
             errorLabel.setText(e.getMessage());
-            nameField.clear();
-            destinationComboBox.getSelectionModel().clearSelection();
-            detailsField.clear();
-            fromDatePicker.getEditor().clear();
-            toDatePicker.getEditor().clear();
-            maxNrBookingsField.clear();
-            priceField.clear();
+            clearFields();
         }
+    }
+
+    private void clearFields() {
+        nameField.clear();
+        destinationComboBox.getSelectionModel().clearSelection();
+        detailsField.clear();
+        fromDatePicker.setValue(LocalDate.now());
+        toDatePicker.setValue(LocalDate.now());
+        maxNrBookingsField.clear();
+        priceField.clear();
     }
 
     private void closeView() {

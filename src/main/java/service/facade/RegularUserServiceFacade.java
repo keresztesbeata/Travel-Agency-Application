@@ -1,6 +1,7 @@
 package service.facade;
 
 import model.User;
+import model.UserType;
 import repository.FilterConditions;
 import service.dto.VacationPackageConverter;
 import service.dto.VacationPackageDTO;

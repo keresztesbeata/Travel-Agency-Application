@@ -6,13 +6,13 @@ public class VacationPackageConverter {
     public static VacationPackageDTO convertToDTO(VacationPackage vacationPackage) {
         VacationPackageDTO vacationPackageDTO = new VacationPackageDTO();
 
-        vacationPackageDTO.setVacationDestinationName(vacationPackage.getName());
+        vacationPackageDTO.setVacationDestinationName(vacationPackage.getVacationDestination().getName());
         vacationPackageDTO.setName(vacationPackage.getName());
         vacationPackageDTO.setDetails(vacationPackage.getDetails());
         vacationPackageDTO.setPrice(vacationPackage.getPrice());
-        vacationPackageDTO.setFrom(vacationPackage.getFrom());
-        vacationPackageDTO.setTo(vacationPackage.getTo());
-        vacationPackageDTO.setMaxNrOfBookings(vacationPackageDTO.getMaxNrOfBookings());
+        vacationPackageDTO.setFrom(vacationPackage.getStartDate());
+        vacationPackageDTO.setTo(vacationPackage.getEndDate());
+        vacationPackageDTO.setMaxNrOfBookings(vacationPackage.getMaxNrOfBookings());
 
         return vacationPackageDTO;
     }
@@ -23,8 +23,8 @@ public class VacationPackageConverter {
         vacationPackage.setName(vacationPackageDTO.getName());
         vacationPackage.setDetails(vacationPackageDTO.getDetails());
         vacationPackage.setPrice(vacationPackageDTO.getPrice());
-        vacationPackage.setFrom(vacationPackageDTO.getFrom());
-        vacationPackage.setTo(vacationPackageDTO.getTo());
+        vacationPackage.setStartDate(vacationPackageDTO.getFrom());
+        vacationPackage.setEndDate(vacationPackageDTO.getTo());
         vacationPackage.setMaxNrOfBookings(vacationPackageDTO.getMaxNrOfBookings());
 
         return vacationPackage;

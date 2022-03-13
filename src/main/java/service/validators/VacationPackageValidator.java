@@ -12,11 +12,11 @@ public class VacationPackageValidator implements InputValidator<VacationPackageD
         validatePackageName(vacationPackageDTO.getName());
         validatePeriod(vacationPackageDTO.getFrom(), vacationPackageDTO.getTo());
         validatePrice(vacationPackageDTO.getPrice());
-        validateNrOfPeople(vacationPackageDTO.getMaxNrOfBookings());
+        validateMaxNrOfBookings(vacationPackageDTO.getMaxNrOfBookings());
     }
 
     private void validatePeriod(LocalDate startDate, LocalDate endDate) throws InvalidInputException {
-        if (startDate.isAfter(endDate)) {
+        if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
             throw new InvalidInputException("Invalid period! The start date cannot be after the end date!");
         }
     }
@@ -30,12 +30,12 @@ public class VacationPackageValidator implements InputValidator<VacationPackageD
         }
     }
 
-    private void validateNrOfPeople(Integer nrOfPeople) throws InvalidInputException {
-        if (nrOfPeople == null) {
-            throw new InvalidInputException("The nr of people cannot be a missing!");
+    private void validateMaxNrOfBookings(Integer maxNrOfBookings) throws InvalidInputException {
+        if (maxNrOfBookings == null) {
+            throw new InvalidInputException("The max nr of bookings cannot be a missing!");
         }
-        if (nrOfPeople < 0) {
-            throw new InvalidInputException("The nr of people cannot be a negative value!");
+        if (maxNrOfBookings < 0) {
+            throw new InvalidInputException("The max nr of bookings cannot be a negative value!");
         }
     }
 

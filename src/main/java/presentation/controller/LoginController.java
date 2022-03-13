@@ -6,43 +6,33 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.User;
-import model.UserType;
 import presentation.views.UIComponentsFactory;
 import service.exceptions.InvalidInputException;
-import service.facade.UserServiceFactory;
+import service.facade.UserService;
 import service.roles.UserRole;
 
 import java.io.IOException;
 
 import static model.UserType.REGULAR_USER;
-import static model.UserType.TRAVEL_AGENCY;
 
 public class LoginController {
 
     public TextField usernameInput;
     public PasswordField passwordInput;
     public Button registerButton;
-    private UserRole userRole;
+    private UserRole userRole = new UserService();
     private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
-    private UserType userType;
-
-    public void init(UserType userType) {
-        this.userType = userType;
-        UserServiceFactory userServiceFactory = new UserServiceFactory();
-        userRole = userServiceFactory.getUserRole(userType);
-        registerButton.setDisable(isAdmin(userType));
-    }
 
     public void onLogin() {
         String username = usernameInput.getText();
         String password = passwordInput.getText();
 
         try {
-            userRole.login(new User(username, password));
-            if (userType.equals(REGULAR_USER)) {
+            User existingUser = userRole.login(new User(username, password));
+            if (existingUser.getUserType().equals(REGULAR_USER)) {
                 viewLoaderFactory.openRegularUserView();
             } else {
-                viewLoaderFactory.openTravelAgencyView();
+                viewLoaderFactory.openTravelAgencyPackagesView();
             }
             closeLoginView();
         } catch (InvalidInputException e) {
@@ -61,10 +51,6 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private boolean isAdmin(UserType userType) {
-        return userType.equals(TRAVEL_AGENCY);
     }
 
     private void closeLoginView() {

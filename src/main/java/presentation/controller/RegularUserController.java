@@ -15,7 +15,7 @@ public class RegularUserController {
     private RegularUserRole userRole = new RegularUserServiceFacade();
     private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
 
-    public void onLogOut(ActionEvent actionEvent) {
+    public void onLogOut() {
         try {
             userRole.logout();
             viewLoaderFactory.openMainView();
@@ -25,18 +25,18 @@ public class RegularUserController {
         }
     }
 
-    public void onFilter(ActionEvent actionEvent) {
+    public void onFilter() {
         // TODO
     }
 
-    public void onCreateBooking(ActionEvent actionEvent) {
+    public void onCreateBooking() {
     }
 
-    public void onShowAvailablePackages(ActionEvent actionEvent) {
+    public void onShowAvailablePackages() {
 
     }
 
-    public void onShowBookingsOfUser(ActionEvent actionEvent) {
+    public void onShowBookingsOfUser() {
     }
 
     private void closeRegularUserView() {

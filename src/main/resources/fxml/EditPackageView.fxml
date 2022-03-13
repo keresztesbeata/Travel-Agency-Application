@@ -1,28 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="presentation.controller.EditPackageController"
-            prefHeight="400.0" prefWidth="600.0"
-            styleClass="background" stylesheets="/styles/style.css">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="dialog-background" stylesheets="/styles/style.css"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="presentation.controller.EditPackageController">
     <children>
         <VBox fillWidth="false" prefHeight="570.0" prefWidth="850.0" spacing="20.0">
             <children>
-                <Label fx:id="errorLabel" alignment="center" style="-fx-alignment: center; -fx-text-fill: #b01717" />
+                <HBox alignment="CENTER">
+                <Label fx:id="errorLabel" alignment="center" style="-fx-alignment: center; -fx-text-fill: red; -fx-font-size: 18px" />
+               <padding>
+                  <Insets bottom="10.0" top="20.0" />
+               </padding>
+                </HBox>
                 <HBox spacing="10.0">
                     <Label text="Name:" />
-                    <ComboBox fx:id="nameComboBox" editable="true" promptText="Select name..." />
+                    <TextField fx:id="nameField" editable="false" />
                 </HBox>
                 <HBox spacing="10.0">
                     <Label text="Details:" />
-                    <TextArea fx:id="detailsField" promptText="Details..." />
+                    <TextArea fx:id="detailsField" />
                 </HBox>
                 <HBox spacing="10.0">
                     <Label text="Destination:" />
@@ -31,13 +38,17 @@
                 </HBox>
                 <HBox spacing="10.0">
                     <Label text="From:" />
-                    <DatePicker fx:id="fromDatePicker" promptText="From..." />
+                    <DatePicker fx:id="fromDatePicker" />
                     <Label text="To:" />
-                    <DatePicker fx:id="toDatePicker" promptText="To..." />
+                    <DatePicker fx:id="toDatePicker" />
                 </HBox>
                 <HBox spacing="10.0">
                     <Label text="Price:" />
-                    <TextField fx:id="priceField" promptText="Price.." />
+                    <TextField fx:id="priceField" />
+                </HBox>
+                <HBox spacing="10.0">
+                    <Label text="Max nr of bookings:" />
+                    <TextField fx:id="maxNrBookingsField" editable="false" />
                 </HBox>
                 <Button alignment="CENTER" mnemonicParsing="false" onAction="#onUpdatePackage" text="Update" />
             </children>

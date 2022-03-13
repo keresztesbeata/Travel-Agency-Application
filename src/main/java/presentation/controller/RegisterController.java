@@ -27,7 +27,7 @@ public class RegisterController {
 
         try {
             userRole.register(new User(username, password, UserType.REGULAR_USER));
-            viewLoaderFactory.openLoginView(UserType.REGULAR_USER);
+            viewLoaderFactory.openLoginView();
             closeRegisterView();
         } catch (InvalidInputException e) {
             UIComponentsFactory.getAlertDialog(Alert.AlertType.ERROR, "Error while registering", e.getMessage())

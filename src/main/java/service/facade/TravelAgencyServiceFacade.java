@@ -5,6 +5,8 @@ import model.VacationDestination;
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
+import service.exceptions.PackageBookedException;
+import service.managers.UserManager;
 import service.managers.VacationDestinationManager;
 import service.managers.VacationPackageManager;
 import service.roles.TravelAgencyRole;
@@ -15,16 +17,22 @@ import java.util.stream.Collectors;
 public class TravelAgencyServiceFacade extends UserService implements TravelAgencyRole {
     private VacationDestinationManager vacationDestinationManager = new VacationDestinationManager();
     private VacationPackageManager vacationPackageManager = new VacationPackageManager();
+    private UserManager userManager = new UserManager();
 
     @Override
-    public void addVacationDestination(VacationDestination vacationDestination) throws InvalidInputException {
-        vacationDestinationManager.add(vacationDestination);
+    public void addVacationDestination(String vacationDestinationName) throws InvalidInputException {
+        vacationDestinationManager.add(vacationDestinationName);
     }
 
     @Override
-    public void deleteVacationDestination(String destinationName) throws InvalidOperationException {
-        vacationPackageManager.deletePackagesOfDestination(destinationName);
-        vacationDestinationManager.delete(destinationName);
+    public VacationDestination findDestinationByName(String destinationName) {
+        return vacationDestinationManager.findByName(destinationName);
+    }
+
+    @Override
+    public void deleteVacationDestination(String vacationDestinationName) throws InvalidOperationException {
+        vacationPackageManager.deletePackagesOfDestination(vacationDestinationName);
+        vacationDestinationManager.delete(vacationDestinationName);
     }
 
     @Override
@@ -46,8 +54,13 @@ public class TravelAgencyServiceFacade extends UserService implements TravelAgen
     }
 
     @Override
-    public void deleteVacationPackage(String vacationPackageName) throws InvalidOperationException {
-        vacationPackageManager.delete(vacationPackageName);
+    public void deleteVacationPackage(String vacationPackageName) throws InvalidOperationException, PackageBookedException {
+        vacationPackageManager.safeDelete(vacationPackageName);
+    }
+
+    @Override
+    public void unSafeDeleteVacationPackage(String vacationPackageName) throws InvalidOperationException {
+        vacationPackageManager.unSafeDelete(vacationPackageName);
     }
 
     @Override

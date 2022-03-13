@@ -12,6 +12,7 @@ import service.dto.VacationPackageConverter;
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
+import service.exceptions.PackageBookedException;
 import service.validators.InputValidator;
 import service.validators.VacationPackageValidator;
 
@@ -62,13 +63,21 @@ public class VacationPackageManager {
         vacationPackageRepository.update(vacationPackage);
     }
 
-    public void delete(String name) throws InvalidOperationException {
+    public void safeDelete(String name) throws InvalidOperationException, PackageBookedException {
         VacationPackage vacationPackage = vacationPackageRepository.findByName(name);
         if (vacationPackage == null) {
             throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it doesn't exist!");
         }
         if (vacationPackage.getPackageStatus().equals(PackageStatus.NOT_BOOKED) && !vacationPackage.getUsers().isEmpty()) {
-            throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it is booked by some users!");
+            throw new PackageBookedException("The vacation package: " + name + " cannot be deleted, because it is booked by some users!");
+        }
+        vacationPackageRepository.delete(vacationPackage.getId());
+    }
+
+    public void unSafeDelete(String name) throws InvalidOperationException {
+        VacationPackage vacationPackage = vacationPackageRepository.findByName(name);
+        if (vacationPackage == null) {
+            throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it doesn't exist!");
         }
         vacationPackageRepository.delete(vacationPackage.getId());
     }

@@ -33,7 +33,7 @@
 }
 
 .dialog-pane .button:hover {
-    -fx-text-fill: black;
+    -fx-text-fill: white;
     -fx-background-color: #efe0e3;
     -fx-margin: 4px 2px;
     -fx-border-color: black;

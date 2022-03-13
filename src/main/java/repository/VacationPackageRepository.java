@@ -15,6 +15,7 @@ import java.util.List;
 public class VacationPackageRepository extends EntityRepository<VacationPackage, Long> {
     private static VacationPackageRepository instance;
     private static final String SQL_DELETE_FROM_JOINED_TABLE_BY_ID = "delete from user_vacation_package where vacation_package_id = :id";
+    private static final String SQL_DELETE_BY_ID = "delete from vacation_package where id = :id";
 
     private VacationPackageRepository() {
         super(VacationPackage.class);
@@ -32,6 +33,14 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         EntityManager entityManager = getEntityManager();
         entityManager.getTransaction().begin();
         entityManager.createNativeQuery(SQL_DELETE_FROM_JOINED_TABLE_BY_ID)
+                .setParameter("id", id)
+                .executeUpdate();
+        entityManager.getTransaction().commit();
+        entityManager.close();
+
+        entityManager = getEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.createNativeQuery(SQL_DELETE_BY_ID)
                 .setParameter("id", id)
                 .executeUpdate();
         entityManager.getTransaction().commit();
@@ -138,12 +147,12 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
 
     private Predicate addAfterStartDateCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, LocalDate startDate) {
         return criteriaBuilder.and(condition,
-                criteriaBuilder.greaterThanOrEqualTo(root.get("from"), startDate));
+                criteriaBuilder.greaterThanOrEqualTo(root.get("startDate"), startDate));
     }
 
     private Predicate addBeforeEndDateCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, LocalDate endDate) {
         return criteriaBuilder.and(condition,
-                criteriaBuilder.lessThanOrEqualTo(root.get("to"), endDate));
+                criteriaBuilder.lessThanOrEqualTo(root.get("endDate"), endDate));
     }
 
     private Predicate addAvailabilityCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition) {
