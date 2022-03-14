@@ -10,7 +10,7 @@ import model.UserType;
 import presentation.views.UIComponentsFactory;
 import service.exceptions.InvalidInputException;
 import service.facade.RegularUserServiceFacade;
-import service.roles.RegularUserRole;
+import service.facade.roles.RegularUserRole;
 
 import java.io.IOException;
 

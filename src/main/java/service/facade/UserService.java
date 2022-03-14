@@ -3,10 +3,13 @@ package service.facade;
 import model.User;
 import service.exceptions.InvalidInputException;
 import service.managers.UserManager;
-import service.roles.UserRole;
+import service.facade.roles.UserRole;
+import service.managers.VacationDestinationManager;
+
+import java.beans.PropertyChangeListener;
 
 public class UserService implements UserRole {
-    private UserManager userManager = new UserManager();
+    private UserManager userManager = UserManager.getInstance();
 
     @Override
     public User login(User user) throws InvalidInputException {
@@ -21,5 +24,15 @@ public class UserService implements UserRole {
     @Override
     public void logout() {
         userManager.logout();
+    }
+
+    @Override
+    public void registerListener(PropertyChangeListener listener) {
+
+    }
+
+    @Override
+    public void removeListener(PropertyChangeListener listener) {
+
     }
 }

@@ -10,6 +10,16 @@ public class UserManager {
     private static UserRepository userRepository = UserRepository.getInstance();
     private InputValidator<User> userValidator = new UserValidator();
     private static Long userId;
+    private static UserManager instance;
+
+    private UserManager() {}
+
+    public static UserManager getInstance() {
+        if(instance == null) {
+            instance = new UserManager();
+        }
+        return instance;
+    }
 
     public User login(User user) throws InvalidInputException {
         if (user.getUsername() == null || user.getPassword() == null) {

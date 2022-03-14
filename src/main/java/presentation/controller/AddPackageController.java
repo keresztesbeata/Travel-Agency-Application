@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.facade.TravelAgencyServiceFacade;
-import service.roles.TravelAgencyRole;
+import service.facade.roles.TravelAgencyRole;
 
 import java.time.LocalDate;
 

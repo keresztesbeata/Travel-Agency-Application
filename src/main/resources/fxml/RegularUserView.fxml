@@ -17,9 +17,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="570.0" prefWidth="850.0" styleClass="background" stylesheets="/styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.controller.RegularUserController">
+<AnchorPane prefHeight="650.0" prefWidth="1000.0" styleClass="background" stylesheets="/styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.controller.RegularUserController">
    <children>
-      <VBox alignment="CENTER" prefHeight="570.0" prefWidth="850.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="TOP_CENTER" prefHeight="570.0" prefWidth="850.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <MenuBar nodeOrientation="LEFT_TO_RIGHT">
               <menus>
@@ -54,10 +54,20 @@
                      <children>
                         <Label text="Destination:" />
                         <ComboBox fx:id="destinationComboBox" prefWidth="150.0" promptText="Select destination..." />
-                        <Button fx:id="applyFiltersButton" mnemonicParsing="false" onAction="#onApplyFilters" text="Apply filters" />
-                         <Button fx:id="clearFiltersButton" mnemonicParsing="false" onAction="#onClearFilters" text="Clear filters" />
                      </children>
                   </HBox>
+                   <HBox spacing="10.0">
+                       <children>
+                           <Label text="Name:" />
+                           <TextField fx:id="keywordField" promptText="Enter name..." />
+                       </children>
+                   </HBox>
+                    <HBox spacing="10.0">
+                        <children>
+                           <Button fx:id="applyFiltersButton" mnemonicParsing="false" onAction="#onApplyFilters" text="Apply filters" />
+                           <Button fx:id="clearFiltersButton" mnemonicParsing="false" onAction="#onClearFilters" text="Clear filters" />
+                        </children>
+                    </HBox>
                </children>
             </VBox>
             <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS">

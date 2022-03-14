@@ -1,7 +1,6 @@
 package service.facade;
 
 import model.User;
-import model.UserType;
 import model.VacationDestination;
 import repository.FilterConditions;
 import service.dto.VacationPackageConverter;
@@ -11,15 +10,16 @@ import service.exceptions.InvalidOperationException;
 import service.managers.UserManager;
 import service.managers.VacationDestinationManager;
 import service.managers.VacationPackageManager;
-import service.roles.RegularUserRole;
+import service.facade.roles.RegularUserRole;
 
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class RegularUserServiceFacade extends UserService implements RegularUserRole {
-    private UserManager userManager = new UserManager();
-    private VacationPackageManager vacationPackageManager = new VacationPackageManager();
-    private VacationDestinationManager vacationDestinationManager = new VacationDestinationManager();
+    private UserManager userManager = UserManager.getInstance();
+    private VacationPackageManager vacationPackageManager = VacationPackageManager.getInstance();
+    private VacationDestinationManager vacationDestinationManager = VacationDestinationManager.getInstance();
 
     @Override
     public void bookVacationPackage(VacationPackageDTO vacationPackageDTO) throws InvalidOperationException {
@@ -62,6 +62,18 @@ public class RegularUserServiceFacade extends UserService implements RegularUser
                 .stream()
                 .map(VacationDestination::getName)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void registerListener(PropertyChangeListener listener) {
+        vacationDestinationManager.addPropertyChangeListener(listener);
+        vacationPackageManager.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removeListener(PropertyChangeListener listener) {
+        vacationDestinationManager.removePropertyChangeListener(listener);
+        vacationPackageManager.removePropertyChangeListener(listener);
     }
 
 }

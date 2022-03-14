@@ -5,7 +5,7 @@ import javafx.stage.Stage;
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.facade.TravelAgencyServiceFacade;
-import service.roles.TravelAgencyRole;
+import service.facade.roles.TravelAgencyRole;
 
 public class EditPackageController {
     public Label errorLabel;
@@ -15,6 +15,7 @@ public class EditPackageController {
     public DatePicker fromDatePicker;
     public DatePicker toDatePicker;
     public TextField priceField;
+    public TextField maxNrOfBookingsField;
 
     private TravelAgencyRole userRole = new TravelAgencyServiceFacade();
 
@@ -29,12 +30,13 @@ public class EditPackageController {
     public void onUpdatePackage() {
         try {
             VacationPackageDTO vacationPackageDTO = new VacationPackageDTO();
-            vacationPackageDTO.setName(nameField.getText());
+            vacationPackageDTO.setName(originalVacationPackageDTO.getName());
             vacationPackageDTO.setDetails(detailsField.getText());
             vacationPackageDTO.setVacationDestinationName(destinationComboBox.getSelectionModel().getSelectedItem());
             vacationPackageDTO.setPrice(Double.parseDouble(priceField.getText()));
             vacationPackageDTO.setFrom(fromDatePicker.getValue());
             vacationPackageDTO.setTo(toDatePicker.getValue());
+            vacationPackageDTO.setMaxNrOfBookings(originalVacationPackageDTO.getMaxNrOfBookings());
             userRole.editVacationPackage(vacationPackageDTO);
             closeView();
         } catch (InvalidInputException e) {
@@ -52,6 +54,10 @@ public class EditPackageController {
         fromDatePicker.setValue(originalVacationPackageDTO.getFrom());
         toDatePicker.setValue(originalVacationPackageDTO.getTo());
         priceField.setText(originalVacationPackageDTO.getPrice().toString());
+        maxNrOfBookingsField.setText(originalVacationPackageDTO.getMaxNrOfBookings().toString());
+
+        maxNrOfBookingsField.setEditable(false);
+        nameField.setEditable(false);
     }
 
     private void closeView() {

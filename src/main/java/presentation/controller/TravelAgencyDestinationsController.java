@@ -7,12 +7,15 @@ import presentation.views.UIComponentsFactory;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import service.facade.TravelAgencyServiceFacade;
-import service.roles.TravelAgencyRole;
+import service.facade.roles.TravelAgencyRole;
+import service.managers.AbstractManager;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.List;
 
-public class TravelAgencyDestinationsController {
+public class TravelAgencyDestinationsController implements PropertyChangeListener {
     public ListView<String> vacationDestinationsList;
     public TextField destinationNameField;
 
@@ -22,7 +25,12 @@ public class TravelAgencyDestinationsController {
     public void init() {
         vacationDestinationsList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         vacationDestinationsList.setPlaceholder(new Label("No destinations loaded yet."));
+        userRole.registerListener(this);
         onReload();
+    }
+
+    public void onClose() {
+        userRole.removeListener(this);
     }
 
     public void onReload() {
@@ -65,20 +73,19 @@ public class TravelAgencyDestinationsController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        closeTravelAgencyView();
+        closeView();
     }
-
 
     public void onViewPackages() {
         try {
             viewLoaderFactory.openTravelAgencyPackagesView();
-            closeTravelAgencyView();
+            closeView();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void closeTravelAgencyView() {
+    private void closeView() {
         Stage stage = (Stage) vacationDestinationsList.getScene().getWindow();
         stage.close();
     }
@@ -88,6 +95,14 @@ public class TravelAgencyDestinationsController {
         VacationDestination vacationDestination = userRole.findDestinationByName(destinationName);
         if (vacationDestination != null) {
             vacationDestinationsList.getSelectionModel().select(vacationDestination.getName());
+        }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals(AbstractManager.PROPERTY_CHANGE.ADDED_ENTRY.name()) ||
+                evt.getPropertyName().equals(AbstractManager.PROPERTY_CHANGE.DELETED_ENTRY.name())) {
+            onReload();
         }
     }
 }

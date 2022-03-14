@@ -15,7 +15,7 @@
 
 <AnchorPane styleClass="background" stylesheets="/styles/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.controller.TravelAgencyPackagesController">
     <children>
-        <VBox alignment="CENTER" prefHeight="570.0" prefWidth="1050.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox alignment="TOP_CENTER" prefHeight="650.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="31.0" prefWidth="850.0">
                     <menus>
@@ -53,7 +53,7 @@
                 </VBox>
                 <ScrollPane fitToWidth="true" vbarPolicy="ALWAYS">
                     <content>
-                        <TableView fx:id="vacationPackagesTable">
+                        <TableView fx:id="vacationPackagesTable" prefHeight="505.0" prefWidth="984.0">
                             <columns>
                                     <TableColumn prefWidth="75.0" text="Name" />
                                     <TableColumn prefWidth="75.0" text="Destination" />

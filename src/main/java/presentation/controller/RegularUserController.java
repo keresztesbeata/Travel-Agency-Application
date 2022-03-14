@@ -9,11 +9,13 @@ import repository.FilterConditions;
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidOperationException;
 import service.facade.RegularUserServiceFacade;
-import service.roles.RegularUserRole;
+import service.facade.roles.RegularUserRole;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-public class RegularUserController {
+public class RegularUserController implements PropertyChangeListener {
     public TableView<VacationPackageDTO> vacationPackagesTable;
     public DatePicker fromDatePicker;
     public DatePicker toDatePicker;
@@ -23,6 +25,7 @@ public class RegularUserController {
     public Button applyFiltersButton;
     public Button clearFiltersButton;
     public VBox createBookingBox;
+    public TextField keywordField;
 
     private RegularUserRole userRole = new RegularUserServiceFacade();
     private ViewLoaderFactory viewLoaderFactory = new ViewLoaderFactory();
@@ -31,14 +34,19 @@ public class RegularUserController {
     public void init() {
         tableManager = new TableManager(vacationPackagesTable);
         destinationComboBox.getItems().setAll(userRole.findAllDestinations());
+        userRole.registerListener(this);
         reload();
+    }
+
+    public void onClose() {
+        userRole.removeListener(this);
     }
 
     public void onLogOut() {
         try {
             userRole.logout();
             viewLoaderFactory.openMainView();
-            closeRegularUserView();
+            closeView();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -50,7 +58,6 @@ public class RegularUserController {
             userRole.bookVacationPackage(vacationPackageDTO);
             UIComponentsFactory.getAlertDialog(Alert.AlertType.INFORMATION, "Success!", "Package was booked successfully!")
                     .showAndWait();
-            reload();
         } catch (InvalidOperationException e) {
             UIComponentsFactory.getAlertDialog(Alert.AlertType.ERROR, "Error! Failed to book package.", e.getMessage())
                     .showAndWait();
@@ -71,7 +78,7 @@ public class RegularUserController {
         tableManager.updateTable(userRole.findBookedVacationPackagesOfCurrentUser());
     }
 
-    private void closeRegularUserView() {
+    private void closeView() {
         Stage stage = (Stage) vacationPackagesTable.getScene().getWindow();
         stage.close();
     }
@@ -95,6 +102,9 @@ public class RegularUserController {
         if (maxPriceField.getText() != null && !maxPriceField.getText().isEmpty()) {
             builder = builder.withMaxPrice(Double.parseDouble(maxPriceField.getText()));
         }
+        if(keywordField.getText() != null && !keywordField.getText().isEmpty()) {
+            builder = builder.withKeyword(keywordField.getText());
+        }
         FilterConditions filterConditions = builder.build();
         tableManager.updateTable(userRole.filterVacationPackagesByConditions(filterConditions));
     }
@@ -109,5 +119,10 @@ public class RegularUserController {
 
     private void reload() {
         tableManager.updateTable(userRole.findAvailableVacationPackages());
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        reload();
     }
 }

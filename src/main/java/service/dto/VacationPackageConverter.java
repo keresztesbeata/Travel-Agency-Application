@@ -13,7 +13,7 @@ public class VacationPackageConverter {
         vacationPackageDTO.setFrom(vacationPackage.getStartDate());
         vacationPackageDTO.setTo(vacationPackage.getEndDate());
         vacationPackageDTO.setPackageStatus(vacationPackage.getPackageStatus().name());
-        vacationPackageDTO.setMaxNrOfBookings(vacationPackageDTO.getMaxNrOfBookings());
+        vacationPackageDTO.setMaxNrOfBookings(vacationPackage.getMaxNrOfBookings());
 
         return vacationPackageDTO;
     }

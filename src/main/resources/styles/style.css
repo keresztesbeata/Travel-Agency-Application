@@ -60,10 +60,6 @@
     -fx-opacity: 1;
 }
 
-.table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: -fx-focus-color;
-}
-
 .split-pane:horizontal > .split-pane-divider {
     -fx-border-color: transparent #1d1d1d transparent #1d1d1d;
     -fx-background-color: transparent, derive(#1d1d1d,20%);
@@ -112,7 +108,7 @@
 
 .table-row-cell:filled:selected:focused, .table-row-cell:filled:selected {
     -fx-background-color: linear-gradient(#ce7886 0%, #c23f52 25%, #c93248 75%, #b42137 100%);
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-font-size: 11pt;
 }
 

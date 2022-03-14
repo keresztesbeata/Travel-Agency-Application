@@ -1,17 +1,30 @@
 package service.managers;
 
+import model.VacationDestination;
+import model.VacationPackage;
 import repository.FilterConditions;
+import repository.VacationDestinationRepository;
 import repository.VacationPackageRepository;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
-import model.VacationDestination;
-import repository.VacationDestinationRepository;
 
 import java.util.List;
 
-public class VacationDestinationManager {
+public class VacationDestinationManager extends AbstractManager {
     private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
     private static VacationPackageRepository vacationPackageRepository = VacationPackageRepository.getInstance();
+    private static final Integer OLD_VALUE = 1;
+    private static final Integer NEW_VALUE = 2;
+    private static VacationDestinationManager instance;
+
+    private VacationDestinationManager() {}
+
+    public static VacationDestinationManager getInstance() {
+        if(instance == null) {
+            instance = new VacationDestinationManager();
+        }
+        return instance;
+    }
 
     public VacationDestination findByName(String name) {
         if (name != null) {
@@ -34,6 +47,7 @@ public class VacationDestinationManager {
         VacationDestination vacationDestination = new VacationDestination();
         vacationDestination.setName(vacationDestinationName);
         vacationDestinationRepository.save(vacationDestination);
+        support.firePropertyChange(PROPERTY_CHANGE.ADDED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
 
     public void delete(String name) throws InvalidOperationException {
@@ -41,10 +55,13 @@ public class VacationDestinationManager {
         if (vacationDestination == null) {
             throw new InvalidOperationException("The vacation destination: " + name + " cannot be deleted, because it doesn't exist!");
         }
-        FilterConditions filterConditions = new FilterConditions.FilterConditionsBuilder().withDestinationName(name).build();
-        vacationPackageRepository.filterByConditions(filterConditions)
-                        .forEach(vacationPackage ->
-                                vacationPackageRepository.delete(vacationPackage.getId()));
+        FilterConditions filterConditions = new FilterConditions.FilterConditionsBuilder()
+                .withDestinationName(name)
+                .build();
+        List<VacationPackage> vacationPackages = vacationPackageRepository.filterByConditions(filterConditions);
+        vacationPackages.forEach(vacationPackage ->
+                vacationPackageRepository.delete(vacationPackage.getId()));
         vacationDestinationRepository.delete(vacationDestination.getId());
+        support.firePropertyChange(PROPERTY_CHANGE.DELETED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
 }

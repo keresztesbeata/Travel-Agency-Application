@@ -20,14 +20,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class VacationPackageManager {
+public class VacationPackageManager extends AbstractManager {
     private static VacationPackageRepository vacationPackageRepository = VacationPackageRepository.getInstance();
     private static VacationDestinationRepository vacationDestinationRepository = VacationDestinationRepository.getInstance();
     private static UserRepository userRepository = UserRepository.getInstance();
     private InputValidator<VacationPackageDTO> vacationPackageValidator;
+    private static final Integer OLD_VALUE = 1;
+    private static final Integer NEW_VALUE = 2;
+    private static VacationPackageManager instance;
 
-    public VacationPackageManager() {
+    private VacationPackageManager() {
         vacationPackageValidator = new VacationPackageValidator();
+    }
+
+    public static VacationPackageManager getInstance() {
+        if(instance == null) {
+            instance = new VacationPackageManager();
+        }
+        return instance;
     }
 
     public void add(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
@@ -36,19 +46,8 @@ public class VacationPackageManager {
         }
         VacationPackage vacationPackage = validateAndConvertVacationPackageDTO(vacationPackageDTO);
         vacationPackageRepository.save(vacationPackage);
+        support.firePropertyChange(PROPERTY_CHANGE.ADDED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
-
-    private VacationPackage validateAndConvertVacationPackageDTO(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
-        vacationPackageValidator.validate(vacationPackageDTO);
-        VacationDestination vacationDestination = vacationDestinationRepository.findByName(vacationPackageDTO.getVacationDestinationName());
-        if (vacationDestination == null) {
-            throw new InvalidInputException("No vacation destination exists with the name: " + vacationPackageDTO.getVacationDestinationName() + "!");
-        }
-        VacationPackage vacationPackage = VacationPackageConverter.convertToEntity(vacationPackageDTO);
-        vacationPackage.setVacationDestination(vacationDestination);
-        return vacationPackage;
-    }
-
 
     public void edit(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
         VacationPackage existingVacationPackage = vacationPackageRepository.findByName(vacationPackageDTO.getName());
@@ -61,6 +60,7 @@ public class VacationPackageManager {
         vacationPackage.setMaxNrOfBookings(existingVacationPackage.getMaxNrOfBookings());
         vacationPackage.setPackageStatus(existingVacationPackage.getPackageStatus());
         vacationPackageRepository.update(vacationPackage);
+        support.firePropertyChange(PROPERTY_CHANGE.UPDATED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
 
     public void safeDelete(String name) throws InvalidOperationException, PackageBookedException {
@@ -72,6 +72,7 @@ public class VacationPackageManager {
             throw new PackageBookedException("The vacation package: " + name + " cannot be deleted, because it is booked by some users!");
         }
         vacationPackageRepository.delete(vacationPackage.getId());
+        support.firePropertyChange(PROPERTY_CHANGE.DELETED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
 
     public void unSafeDelete(String name) throws InvalidOperationException {
@@ -80,6 +81,7 @@ public class VacationPackageManager {
             throw new InvalidOperationException("The vacation package: " + name + " cannot be deleted, because it doesn't exist!");
         }
         vacationPackageRepository.delete(vacationPackage.getId());
+        support.firePropertyChange(PROPERTY_CHANGE.DELETED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
 
     public void deletePackagesOfDestination(String vacationDestinationName) {
@@ -92,6 +94,7 @@ public class VacationPackageManager {
                     .stream()
                     .map(VacationPackage::getId)
                     .forEach(id -> vacationPackageRepository.delete(id));
+            support.firePropertyChange(PROPERTY_CHANGE.DELETED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
         }
     }
 
@@ -107,9 +110,6 @@ public class VacationPackageManager {
     }
 
     public List<VacationPackageDTO> filterByConditions(FilterConditions filterConditions) {
-        if (filterConditions.getDestinationName().isPresent()) {
-            filterConditions.setVacationDestination(vacationDestinationRepository.findByName(filterConditions.getDestinationName().get()));
-        }
         return vacationPackageRepository.filterByConditions(filterConditions)
                 .stream()
                 .map(VacationPackageConverter::convertToDTO)
@@ -141,6 +141,7 @@ public class VacationPackageManager {
         user.addVacationPackage(vacationPackage);
         userRepository.update(user);
         vacationPackageRepository.update(vacationPackage);
+        support.firePropertyChange(PROPERTY_CHANGE.UPDATED_ENTRY.name(), OLD_VALUE, NEW_VALUE);
     }
 
     public List<VacationPackageDTO> findAvailableVacationPackages(User user) {
@@ -152,5 +153,16 @@ public class VacationPackageManager {
                         .noneMatch(booker -> booker.getId().equals(user.getId())))
                 .map(VacationPackageConverter::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    private VacationPackage validateAndConvertVacationPackageDTO(VacationPackageDTO vacationPackageDTO) throws InvalidInputException {
+        vacationPackageValidator.validate(vacationPackageDTO);
+        VacationDestination vacationDestination = vacationDestinationRepository.findByName(vacationPackageDTO.getVacationDestinationName());
+        if (vacationDestination == null) {
+            throw new InvalidInputException("No vacation destination exists with the name: " + vacationPackageDTO.getVacationDestinationName() + "!");
+        }
+        VacationPackage vacationPackage = VacationPackageConverter.convertToEntity(vacationPackageDTO);
+        vacationPackage.setVacationDestination(vacationDestination);
+        return vacationPackage;
     }
 }

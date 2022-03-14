@@ -1,6 +1,5 @@
 package presentation.controller;
 
-import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -13,15 +12,18 @@ import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidOperationException;
 import service.exceptions.PackageBookedException;
 import service.facade.TravelAgencyServiceFacade;
-import service.roles.TravelAgencyRole;
+import service.managers.AbstractManager;
+import service.facade.roles.TravelAgencyRole;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class TravelAgencyPackagesController {
+public class TravelAgencyPackagesController implements PropertyChangeListener {
     public TableView<VacationPackageDTO> vacationPackagesTable;
     public CheckBox notBookedChoiceBox;
     public CheckBox inProgressChoiceBox;
@@ -43,7 +45,12 @@ public class TravelAgencyPackagesController {
             }
         });
         tableManager = new TableManager(vacationPackagesTable);
+        userRole.registerListener(this);
         onReload();
+    }
+
+    public void onClose() {
+        userRole.removeListener(this);
     }
 
     public void onLogOut() {
@@ -53,7 +60,7 @@ public class TravelAgencyPackagesController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        closeTravelAgencyView();
+        closeView();
     }
 
     public void onFilterByStatus() {
@@ -85,7 +92,6 @@ public class TravelAgencyPackagesController {
     public void onViewDestinations() {
         try {
             viewLoaderFactory.openTravelAgencyDestinationsView();
-            closeTravelAgencyView();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -114,8 +120,18 @@ public class TravelAgencyPackagesController {
         }
     }
 
-    private void closeTravelAgencyView() {
+    public void closeView() {
         Stage stage = (Stage) vacationPackagesTable.getScene().getWindow();
         stage.close();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        if(evt.getPropertyName().equals(AbstractManager.PROPERTY_CHANGE.ADDED_ENTRY.name()) ||
+                evt.getPropertyName().equals(AbstractManager.PROPERTY_CHANGE.UPDATED_ENTRY.name()) ||
+                evt.getPropertyName().equals(AbstractManager.PROPERTY_CHANGE.DELETED_ENTRY.name())) {
+            onReload();
+        }
+        onReload();
     }
 }

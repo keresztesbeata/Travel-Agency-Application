@@ -13,8 +13,6 @@ public class FilterConditions {
     private Optional<LocalDate> endDate;
     private Optional<String> keyword;
     private Optional<String> destinationName;
-    @Setter
-    private VacationDestination vacationDestination;
     private Optional<Double> minPrice;
     private Optional<Double> maxPrice;
     private boolean available;
@@ -39,7 +37,6 @@ public class FilterConditions {
         private Optional<String> destinationName = Optional.empty();
         private Optional<Double> minPrice = Optional.empty();
         private Optional<Double> maxPrice = Optional.empty();
-        private VacationDestination vacationDestination;
         private boolean available;
 
         public FilterConditionsBuilder withStartDate(LocalDate startDate) {

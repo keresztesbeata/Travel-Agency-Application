@@ -1,4 +1,4 @@
-package service.roles;
+package service.facade.roles;
 
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;

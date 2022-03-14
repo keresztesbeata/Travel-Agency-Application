@@ -1,7 +1,6 @@
-package service.roles;
+package service.facade.roles;
 
 import model.User;
-import model.VacationPackage;
 import repository.FilterConditions;
 import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;

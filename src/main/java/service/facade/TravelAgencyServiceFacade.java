@@ -6,18 +6,19 @@ import service.dto.VacationPackageDTO;
 import service.exceptions.InvalidInputException;
 import service.exceptions.InvalidOperationException;
 import service.exceptions.PackageBookedException;
+import service.facade.roles.TravelAgencyRole;
 import service.managers.UserManager;
 import service.managers.VacationDestinationManager;
 import service.managers.VacationPackageManager;
-import service.roles.TravelAgencyRole;
 
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class TravelAgencyServiceFacade extends UserService implements TravelAgencyRole {
-    private VacationDestinationManager vacationDestinationManager = new VacationDestinationManager();
-    private VacationPackageManager vacationPackageManager = new VacationPackageManager();
-    private UserManager userManager = new UserManager();
+    private VacationDestinationManager vacationDestinationManager = VacationDestinationManager.getInstance();
+    private VacationPackageManager vacationPackageManager = VacationPackageManager.getInstance();
+    private UserManager userManager = UserManager.getInstance();
 
     @Override
     public void addVacationDestination(String vacationDestinationName) throws InvalidInputException {
@@ -66,5 +67,17 @@ public class TravelAgencyServiceFacade extends UserService implements TravelAgen
     @Override
     public List<VacationPackageDTO> filterVacationPackagesByStatus(List<PackageStatus> packageStatusList) {
         return vacationPackageManager.filterByStatus(packageStatusList);
+    }
+
+    @Override
+    public void registerListener(PropertyChangeListener listener) {
+        vacationDestinationManager.addPropertyChangeListener(listener);
+        vacationPackageManager.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removeListener(PropertyChangeListener listener) {
+        vacationPackageManager.removePropertyChangeListener(listener);
+        vacationDestinationManager.removePropertyChangeListener(listener);
     }
 }

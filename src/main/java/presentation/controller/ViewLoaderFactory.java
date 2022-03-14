@@ -42,13 +42,23 @@ public class ViewLoaderFactory {
     }
 
     public void openRegularUserView() throws IOException {
-        openView(REGULAR_USER_VIEW_URL, "Home (Regular User)").setOnCloseRequest(e -> Platform.exit());
+        openView(REGULAR_USER_VIEW_URL, "Home (Regular User)")
+                .setOnCloseRequest(e -> {
+                    RegularUserController regularUserController = (RegularUserController) getController(REGULAR_USER_VIEW_URL);
+                    regularUserController.onClose();
+                    Platform.exit();
+                });
         RegularUserController regularUserController = (RegularUserController) getController(REGULAR_USER_VIEW_URL);
         regularUserController.init();
     }
 
     public void openTravelAgencyPackagesView() throws IOException {
-        openView(TRAVEL_AGENCY_PACKAGES_VIEW_URL, "Home (Travel agency)").setOnCloseRequest(e -> Platform.exit());
+        openView(TRAVEL_AGENCY_PACKAGES_VIEW_URL, "Home (Travel agency)").setOnCloseRequest(e -> {
+                    TravelAgencyPackagesController travelAgencyPackagesController = (TravelAgencyPackagesController) getController(TRAVEL_AGENCY_PACKAGES_VIEW_URL);
+                    travelAgencyPackagesController.onClose();
+                    Platform.exit();
+                }
+        );
         TravelAgencyPackagesController travelAgencyPackagesController = (TravelAgencyPackagesController) getController(TRAVEL_AGENCY_PACKAGES_VIEW_URL);
         travelAgencyPackagesController.init();
     }
@@ -60,13 +70,11 @@ public class ViewLoaderFactory {
     }
 
     public void openTravelAgencyDestinationsView() throws IOException {
-        openView(TRAVEL_AGENCY_DESTINATIONS_VIEW_URL, "Vacation destinations").setOnCloseRequest(e -> {
-            try {
-                openTravelAgencyPackagesView();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        });
+        openView(TRAVEL_AGENCY_DESTINATIONS_VIEW_URL, "Vacation destinations (Travel agency)").setOnCloseRequest(e -> {
+                    TravelAgencyDestinationsController travelAgencyDestinationsController = (TravelAgencyDestinationsController) getController(TRAVEL_AGENCY_DESTINATIONS_VIEW_URL);
+                    travelAgencyDestinationsController.onClose();
+                }
+        );
         TravelAgencyDestinationsController travelAgencyDestinationsController = (TravelAgencyDestinationsController) getController(TRAVEL_AGENCY_DESTINATIONS_VIEW_URL);
         travelAgencyDestinationsController.init();
     }

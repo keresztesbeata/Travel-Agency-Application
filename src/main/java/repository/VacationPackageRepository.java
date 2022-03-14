@@ -111,7 +111,7 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
             condition = addContainsKeywordCondition(criteriaBuilder, root, condition, filterConditions.getKeyword().get());
         }
         if (filterConditions.getDestinationName().isPresent()) {
-            condition = addHasDestinationCondition(criteriaBuilder, root, condition, filterConditions.getVacationDestination());
+            condition = addHasDestinationCondition(criteriaBuilder, root, condition, filterConditions.getDestinationName().get());
         }
         if (filterConditions.getMinPrice().isPresent()) {
             condition = addMinPriceCondition(criteriaBuilder, root, condition, filterConditions.getMinPrice().get());
@@ -135,9 +135,9 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
                 criteriaBuilder.lt(root.get("price"), maxPrice));
     }
 
-    public Predicate addHasDestinationCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, VacationDestination vacationDestination) {
+    public Predicate addHasDestinationCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, String vacationDestinationName) {
         return criteriaBuilder.and(condition,
-                criteriaBuilder.equal(root.get("vacationDestination"), vacationDestination));
+                criteriaBuilder.equal(root.get("vacationDestination").get("name"), vacationDestinationName));
     }
 
     private Predicate addContainsKeywordCondition(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, Predicate condition, String keyword) {
