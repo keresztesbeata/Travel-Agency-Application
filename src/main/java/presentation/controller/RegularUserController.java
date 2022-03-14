@@ -115,6 +115,7 @@ public class RegularUserController implements PropertyChangeListener {
         minPriceField.clear();
         maxPriceField.clear();
         destinationComboBox.getSelectionModel().clearSelection();
+        keywordField.clear();
     }
 
     private void reload() {

@@ -117,7 +117,7 @@ public class VacationPackageManager extends AbstractManager {
     }
 
     public List<VacationPackageDTO> findBookedVacationPackagesOfUser(User user) {
-        return user.getVacationPackages()
+        return vacationPackageRepository.findVacationPackagesBookedByUser(user)
                 .stream()
                 .map(VacationPackageConverter::convertToDTO)
                 .collect(Collectors.toList());
@@ -126,7 +126,7 @@ public class VacationPackageManager extends AbstractManager {
     public void bookVacationPackage(VacationPackageDTO vacationPackageDTO, User user) throws InvalidOperationException {
         VacationPackage vacationPackage = vacationPackageRepository.findByName(vacationPackageDTO.getName());
         if (vacationPackage.getNrOfBookings() >= vacationPackage.getMaxNrOfBookings()) {
-            throw new InvalidOperationException("This vacation package is already fully booked! Please choose another package.");
+            throw new InvalidOperationException("This vacation package is already fully booked!\nPlease choose another package.");
         }
         Set<User> users = vacationPackage.getUsers();
         if (users.contains(user)) {
@@ -145,7 +145,10 @@ public class VacationPackageManager extends AbstractManager {
     }
 
     public List<VacationPackageDTO> findAvailableVacationPackages(User user) {
-        FilterConditions filterConditions = new FilterConditions.FilterConditionsBuilder().withAvailability(true).build();
+        FilterConditions filterConditions = new FilterConditions
+                .FilterConditionsBuilder()
+                .withAvailability(true)
+                .build();
         return vacationPackageRepository.filterByConditions(filterConditions)
                 .stream()
                 .filter(vacationPackage -> vacationPackage.getUsers()
@@ -159,7 +162,7 @@ public class VacationPackageManager extends AbstractManager {
         vacationPackageValidator.validate(vacationPackageDTO);
         VacationDestination vacationDestination = vacationDestinationRepository.findByName(vacationPackageDTO.getVacationDestinationName());
         if (vacationDestination == null) {
-            throw new InvalidInputException("No vacation destination exists with the name: " + vacationPackageDTO.getVacationDestinationName() + "!");
+            throw new InvalidInputException("No vacation destination exists with the name:\n" + vacationPackageDTO.getVacationDestinationName() + "!");
         }
         VacationPackage vacationPackage = VacationPackageConverter.convertToEntity(vacationPackageDTO);
         vacationPackage.setVacationDestination(vacationDestination);

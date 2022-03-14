@@ -50,6 +50,7 @@ public class EditPackageController {
         nameField.setEditable(false);
         destinationComboBox.getItems().addAll(userRole.findAllDestinations());
         destinationComboBox.getSelectionModel().select(originalVacationPackageDTO.getVacationDestinationName());
+        detailsField.setWrapText(true);
         detailsField.setText(originalVacationPackageDTO.getDetails());
         fromDatePicker.setValue(originalVacationPackageDTO.getFrom());
         toDatePicker.setValue(originalVacationPackageDTO.getTo());

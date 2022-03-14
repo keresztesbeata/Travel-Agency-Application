@@ -230,3 +230,24 @@
     -fx-text-fill: white;
     -fx-font-size: 11pt;
 }
+
+.date-picker:editable > .arrow-button > * {
+    -fx-opacity: 0;
+    -fx-text-fill: black;
+}
+
+.date-picker > .arrow-button {
+    -fx-background-image: url("/icon/calendar.png");
+    -fx-background-size: 60% 60%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-text-fill: black;
+}
+
+.date-picker {
+    -fx-text-fill: black;
+}
+
+.date-picker .label-header .label{
+    -fx-text-fill: black;
+}

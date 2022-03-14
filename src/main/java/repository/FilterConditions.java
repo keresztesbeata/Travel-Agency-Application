@@ -1,8 +1,6 @@
 package repository;
 
 import lombok.Getter;
-import lombok.Setter;
-import model.VacationDestination;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -16,9 +14,6 @@ public class FilterConditions {
     private Optional<Double> minPrice;
     private Optional<Double> maxPrice;
     private boolean available;
-
-    private FilterConditions() {
-    }
 
     private FilterConditions(Optional<LocalDate> startDate, Optional<LocalDate> endDate, Optional<String> keyword, Optional<String> destinationName, Optional<Double> minPrice, Optional<Double> maxPrice, boolean available) {
         this.startDate = startDate;

@@ -54,13 +54,14 @@ public class TravelAgencyPackagesController implements PropertyChangeListener {
     }
 
     public void onLogOut() {
-        userRole.logout();
         try {
+            userRole.logout();
             viewLoaderFactory.openMainView();
+            closeView();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        closeView();
+
     }
 
     public void onFilterByStatus() {

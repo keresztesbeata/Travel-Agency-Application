@@ -40,7 +40,7 @@ public class UserManager {
         userValidator.validate(user);
 
         if (userRepository.findByUsername(user.getUsername()) != null) {
-            throw new InvalidInputException("The username: " + user.getUsername() + " is already taken! Please select another one!");
+            throw new InvalidInputException("The username: " + user.getUsername() + " is already taken!\nPlease select another one!");
         }
         userRepository.save(user);
     }

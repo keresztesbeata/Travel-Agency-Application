@@ -53,7 +53,7 @@ public class VacationDestinationManager extends AbstractManager {
     public void delete(String name) throws InvalidOperationException {
         VacationDestination vacationDestination = vacationDestinationRepository.findByName(name);
         if (vacationDestination == null) {
-            throw new InvalidOperationException("The vacation destination: " + name + " cannot be deleted, because it doesn't exist!");
+            throw new InvalidOperationException("The vacation destination: " + name + " cannot be deleted,\nbecause it doesn't exist!");
         }
         FilterConditions filterConditions = new FilterConditions.FilterConditionsBuilder()
                 .withDestinationName(name)

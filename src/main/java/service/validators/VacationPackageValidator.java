@@ -17,7 +17,7 @@ public class VacationPackageValidator implements InputValidator<VacationPackageD
 
     private void validatePeriod(LocalDate startDate, LocalDate endDate) throws InvalidInputException {
         if (startDate == null || endDate == null || startDate.isAfter(endDate)) {
-            throw new InvalidInputException("Invalid period! The start date cannot be after the end date!");
+            throw new InvalidInputException("Invalid period!\nThe start date cannot be after the end date!");
         }
     }
 

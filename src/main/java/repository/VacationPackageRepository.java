@@ -1,7 +1,7 @@
 package repository;
 
 import model.PackageStatus;
-import model.VacationDestination;
+import model.User;
 import model.VacationPackage;
 
 import javax.persistence.EntityManager;
@@ -9,13 +9,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VacationPackageRepository extends EntityRepository<VacationPackage, Long> {
     private static VacationPackageRepository instance;
     private static final String SQL_DELETE_FROM_JOINED_TABLE_BY_ID = "delete from user_vacation_package where vacation_package_id = :id";
     private static final String SQL_DELETE_BY_ID = "delete from vacation_package where id = :id";
+    private static final String SQL_QUERY_FIND_PACKAGES_BOOKED_BY_USER = "SELECT vp.id from vacation_package vp join user_vacation_package uvp on vp.id = uvp.vacation_package_id where uvp.user_id = :id";
 
     private VacationPackageRepository() {
         super(VacationPackage.class);
@@ -31,25 +34,22 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
     @Override
     public void delete(Long id) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         entityManager.createNativeQuery(SQL_DELETE_FROM_JOINED_TABLE_BY_ID)
                 .setParameter("id", id)
                 .executeUpdate();
         entityManager.getTransaction().commit();
-        entityManager.close();
 
-        entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         entityManager.createNativeQuery(SQL_DELETE_BY_ID)
                 .setParameter("id", id)
                 .executeUpdate();
         entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public VacationPackage findByName(String name) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<VacationPackage> criteriaQuery = criteriaBuilder.createQuery(VacationPackage.class);
         Root<VacationPackage> root = criteriaQuery.from(VacationPackage.class);
@@ -61,13 +61,13 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         if (!result.isEmpty()) {
             vacationPackage = result.get(0);
         }
-        entityManager.close();
+
         return vacationPackage;
     }
 
     public List<VacationPackage> filterByStatus(List<PackageStatus> packageStatuses) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<VacationPackage> criteriaQuery = criteriaBuilder.createQuery(VacationPackage.class);
         Root<VacationPackage> root = criteriaQuery.from(VacationPackage.class);
@@ -79,24 +79,32 @@ public class VacationPackageRepository extends EntityRepository<VacationPackage,
         } else {
             criteriaQuery.select(root);
         }
-        List<VacationPackage> result = entityManager.createQuery(criteriaQuery)
+        return entityManager.createQuery(criteriaQuery)
                 .getResultList();
-        entityManager.close();
-        return result;
+    }
+
+    public List<VacationPackage> findVacationPackagesBookedByUser(User user) {
+        EntityManager entityManager = getEntityManager();
+        beginTransaction();
+        List<BigInteger> result = entityManager.createNativeQuery(SQL_QUERY_FIND_PACKAGES_BOOKED_BY_USER)
+                .setParameter("id", user.getId())
+                .getResultList();
+        return result.stream()
+                .map(id -> findById(id.longValue()))
+                .collect(Collectors.toList());
     }
 
     public List<VacationPackage> filterByConditions(FilterConditions filterConditions) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<VacationPackage> criteriaQuery = criteriaBuilder.createQuery(VacationPackage.class);
         Root<VacationPackage> root = criteriaQuery.from(VacationPackage.class);
         Predicate condition = createFilterPredicate(criteriaBuilder, root, filterConditions);
         criteriaQuery.select(root).where(condition);
-        List<VacationPackage> result = entityManager.createQuery(criteriaQuery)
+
+        return entityManager.createQuery(criteriaQuery)
                 .getResultList();
-        entityManager.close();
-        return result;
     }
 
     private Predicate createFilterPredicate(CriteriaBuilder criteriaBuilder, Root<VacationPackage> root, FilterConditions filterConditions) {

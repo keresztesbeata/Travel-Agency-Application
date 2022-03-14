@@ -21,7 +21,7 @@ public class UserValidator implements InputValidator<User> {
             throw new InvalidInputException("The username should not be empty!");
         }
         if (username.length() > MAX_USERNAME_LENGTH) {
-            throw new InvalidInputException("The username: " + username + " has invalid length! It should be less than " + MAX_USERNAME_LENGTH + "!");
+            throw new InvalidInputException("The username: " + username + " has invalid length!\nIt should be less than " + MAX_USERNAME_LENGTH + "!");
         }
     }
 
@@ -33,7 +33,7 @@ public class UserValidator implements InputValidator<User> {
         Matcher matcher = pattern.matcher(password);
 
         if (!matcher.matches()) {
-            throw new InvalidInputException("The password: " + password + " has an invalid format! It should contain at least 1 digit, uppercase and lower case letters, and a special character from '.','_','@','&','$','#' or '!'");
+            throw new InvalidInputException("The password: " + password + " has an invalid format!\nIt should contain at least 1 digit, uppercase and lower case letters, and a special character from '.','_','@','&','$','#' or '!'");
         }
     }
 }

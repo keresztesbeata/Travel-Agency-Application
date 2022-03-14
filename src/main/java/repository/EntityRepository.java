@@ -12,6 +12,7 @@ public abstract class EntityRepository<T, L> {
     private static final String PERSISTENCE_UNIT_NAME = "main";
     private Class<T> type;
     private EntityManagerFactory entityManagerFactory;
+    private EntityManager entityManager;
 
     public EntityRepository(Class<T> type) {
         this.type = type;
@@ -19,24 +20,25 @@ public abstract class EntityRepository<T, L> {
     }
 
     protected EntityManager getEntityManager() {
-        return entityManagerFactory.createEntityManager();
+        if (entityManager == null) {
+            entityManager = entityManagerFactory.createEntityManager();
+        }
+        return entityManager;
     }
 
     public void save(T entity) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         entityManager.persist(entity);
         entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public void delete(L id) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         T existingEntity = entityManager.find(type, id);
         entityManager.remove(existingEntity);
         entityManager.getTransaction().commit();
-        entityManager.close();
     }
 
     public T findById(L id) {
@@ -46,26 +48,29 @@ public abstract class EntityRepository<T, L> {
 
     public List<T> findAll() {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<T> criteriaQuery = criteriaBuilder.createQuery(type);
         Root<T> root = criteriaQuery.from(type);
         criteriaQuery.select(root);
         List<T> result = entityManager.createQuery(criteriaQuery).getResultList();
-        entityManager.close();
 
         return result;
     }
 
     public T update(T entity) {
         EntityManager entityManager = getEntityManager();
-        entityManager.getTransaction().begin();
+        beginTransaction();
         T updatedEntity = entityManager.merge(entity);
         entityManager.getTransaction().commit();
-        entityManager.close();
 
         return updatedEntity;
     }
 
+    protected void beginTransaction() {
+        if (!entityManager.getTransaction().isActive()) {
+            entityManager.getTransaction().begin();
+        }
+    }
 }
 

@@ -77,12 +77,7 @@ public class TravelAgencyDestinationsController implements PropertyChangeListene
     }
 
     public void onViewPackages() {
-        try {
-            viewLoaderFactory.openTravelAgencyPackagesView();
-            closeView();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        closeView();
     }
 
     private void closeView() {
